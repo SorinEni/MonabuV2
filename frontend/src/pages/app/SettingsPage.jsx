@@ -22,21 +22,22 @@ import { useAccountActions } from "@hooks/useAccountActions";
 import "@styles/Settings.css";
 
 const TABS = [
-  { id: "profile",  label: "Profile" },
+  { id: "profile", label: "Profile" },
   { id: "password", label: "Password" },
   { id: "pomodoro", label: "Pomodoro" },
-  { id: "import",   label: "Import / Export" },
-  { id: "account",  label: "Account" },
+  { id: "import", label: "Import / Export" },
+  { id: "account", label: "Account" },
 ];
 
 export default function SettingsPage() {
-  const [user, setUser]       = useState(getUser());
+  const [user, setUser] = useState(getUser());
   const [activeTab, setActiveTab] = useState("profile");
-  const [toast, setToast]     = useState(null);
+  const [toast, setToast] = useState(null);
 
   // Refresh user on mount so hasPassword and other fields are current
   useEffect(() => {
-    api.get("/auth/me")
+    api
+      .get("/auth/me")
       .then((res) => {
         if (res?.user) {
           updateStoredUser(res.user);
@@ -50,13 +51,15 @@ export default function SettingsPage() {
     setToast({ message, type });
   }
 
-  const profile  = useProfileSettings(user, setUser, showToast);
+  const profile = useProfileSettings(user, setUser, showToast);
   const password = usePasswordSettings(setUser, showToast);
   const pomodoro = usePomodoroSettings(user, setUser, showToast);
-  const account  = useAccountActions(showToast);
+  const account = useAccountActions(showToast);
 
   return (
-    <AppShell className="settings-root" userThemePreference={user?.themePreference}>
+    <AppShell
+      className="settings-root"
+      userThemePreference={user?.themePreference}>
       <div className="settings-header">
         <h1 className="settings-header__title">Settings</h1>
         <p className="settings-header__sub">
@@ -76,24 +79,58 @@ export default function SettingsPage() {
 
       <div className="settings-body" key={activeTab}>
         {activeTab === "profile" && <ProfileTab {...profile} user={user} />}
-        {activeTab === "password" && <PasswordTab {...password} hasPassword={user?.hasPassword} />}
+        {activeTab === "password" && (
+          <PasswordTab {...password} hasPassword={user?.hasPassword} />
+        )}
         {activeTab === "pomodoro" && <PomodoroTab {...pomodoro} />}
-        {activeTab === "import" && <ImportTab onToast={showToast} user={user} />}
+        {activeTab === "import" && (
+          <ImportTab onToast={showToast} user={user} />
+        )}
         {activeTab === "account" && (
           <AccountTab
-            {...account}
             user={user}
             hasPassword={user?.hasPassword}
+            // localisation — lives in profile hook, auto-saves on valid change
+            timezone={profile.timezone}
+            setTimezone={profile.setTimezone}
+            language={profile.language}
+            setLanguage={profile.setLanguage}
+            // leaderboard — also in profile hook
             leaderboardPublic={profile.leaderboardPublic}
-            setLeaderboardPublic={profile.setLeaderboardPublic}
+            leaderboardToggling={profile.leaderboardToggling}
+            onLeaderboardToggle={profile.onLeaderboardToggle}
+            // account actions
+            logoutAllLoading={account.logoutAllLoading}
+            onLogoutAll={account.handleLogoutAll}
+            onOpenDeleteData={account.openDeleteData}
+            onOpenDeleteAccount={account.openDeleteAccount}
           />
         )}
       </div>
 
-      <DeleteModals {...account} />
+      <DeleteModals
+        showDeleteDataModal={account.showDeleteDataModal}
+        deleteDataConfirmText={account.deleteDataConfirmText}
+        setDeleteDataConfirmText={account.setDeleteDataConfirmText}
+        deleteDataLoading={account.deleteDataLoading}
+        deleteDataError={account.deleteDataError}
+        onDeleteAllData={account.handleDeleteAllData}
+        onCloseDeleteData={account.onCloseDeleteData}
+        showDeleteModal={account.showDeleteModal}
+        deleteConfirmText={account.deleteConfirmText}
+        setDeleteConfirmText={account.setDeleteConfirmText}
+        deleteLoading={account.deleteLoading}
+        deleteError={account.deleteError}
+        onDeleteAccount={account.handleDeleteAccount}
+        onCloseDeleteAccount={account.onCloseDeleteAccount}
+      />
 
       {toast && (
-        <Toast message={toast.message} type={toast.type} onDone={() => setToast(null)} />
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onDone={() => setToast(null)}
+        />
       )}
     </AppShell>
   );

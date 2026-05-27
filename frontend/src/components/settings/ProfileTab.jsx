@@ -1,13 +1,4 @@
-import { useRef, useState, useEffect } from "react";
-import TimezoneCombobox from "./TimezoneCombobox";
-import LanguageSelect from "./LanguageSelect";
-import { GOALS } from "@constants/goals";
-
-const GOALS_WITH_NONE = (() => {
-  const hasNone = GOALS.some((g) => g.value === "none");
-  if (hasNone) return GOALS;
-  return [{ value: "none", icon: "—", label: "No goal" }, ...GOALS];
-})();
+import { useState, useEffect } from "react";
 
 function getInitials(user) {
   return (user?.name || user?.username || user?.email || "?")
@@ -41,15 +32,10 @@ export default function ProfileTab({
   setUsername,
   usernameError,
   setUsernameError,
-  timezone,
-  setTimezone,
-  language,
-  setLanguage,
-  goal,
-  setGoal,
   weeklyHours,
   setWeeklyHours,
   profileLoading,
+  profileSaving,
   onSave,
 }) {
   const nameCooldown = getNameCooldownInfo(user);
@@ -97,6 +83,9 @@ export default function ProfileTab({
                     Verified
                   </span>
                 )}
+                <span className="settings-badge settings-badge--plan" style={{ marginLeft: 8 }}>
+                  {user?.plan ?? "free"}
+                </span>
               </div>
               <div className="settings-btn-row">
                 <button
@@ -142,10 +131,35 @@ export default function ProfileTab({
         <div className="settings-section__header">
           <div className="settings-section__title">Identity</div>
           <div className="settings-section__desc">
-            Your display name and unique username.
+            Your email, display name, and unique username.
           </div>
         </div>
         <div className="settings-section__body">
+          <div className="settings-field">
+            <label className="settings-label">Email</label>
+            <div className="settings-input settings-input--readonly">
+              {user?.email || (
+                <span style={{ color: "var(--text-faint)" }}>not set</span>
+              )}
+              {user?.isVerified ? (
+                <span className="settings-badge settings-badge--verified" style={{ marginLeft: "auto" }}>
+                  Verified
+                </span>
+              ) : (
+                <span
+                  className="settings-badge"
+                  style={{
+                    marginLeft: "auto",
+                    background: "var(--color-warning-dim)",
+                    border: "1px solid var(--color-warning-border)",
+                    color: "var(--color-warning)",
+                  }}>
+                  Unverified
+                </span>
+              )}
+            </div>
+          </div>
+
           <div className="settings-field">
             <label className="settings-label" htmlFor="s-name">
               Display name
@@ -249,49 +263,19 @@ export default function ProfileTab({
               </div>
             )}
           </div>
-
-          <div className="settings-field">
-            <label className="settings-label" htmlFor="s-tz">
-              Timezone
-            </label>
-            <TimezoneCombobox value={timezone} onChange={setTimezone} />
-          </div>
-
-          <div className="settings-field">
-            <label className="settings-label">
-              Language
-            </label>
-            <LanguageSelect value={language} onChange={setLanguage} />
-            <div style={{ fontSize: 11.5, color: "var(--text-faint)", marginTop: 4 }}>
-              Affects default tag names and app language
-            </div>
-          </div>
         </div>
       </div>
 
-      {/* Goals */}
+      {/* Weekly goal */}
       <div className="settings-section">
         <div className="settings-section__header">
-          <div className="settings-section__title">Learning goal</div>
+          <div className="settings-section__title">Weekly goal</div>
           <div className="settings-section__desc">
-            Helps us tailor insights and analytics to your focus area.
+            Set how many hours you aim to study each week.
           </div>
         </div>
         <div className="settings-section__body">
-          <div className="settings-goal-grid">
-            {GOALS_WITH_NONE.map((g) => (
-              <button
-                key={g.value}
-                type="button"
-                className={`settings-goal-card${goal === g.value ? " settings-goal-card--selected" : ""}`}
-                onClick={() => setGoal(g.value)}>
-                <span className="settings-goal-icon">{g.icon}</span>
-                {g.label}
-              </button>
-            ))}
-          </div>
-
-          <div className="settings-field" style={{ marginTop: 4 }}>
+          <div className="settings-field">
             <label className="settings-label">Weekly hour goal</label>
             <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
               <div className="settings-hours-control">
@@ -345,7 +329,7 @@ export default function ProfileTab({
           type="button"
           className={`settings-save-btn${profileLoading ? " settings-save-btn--loading" : ""}`}
           onClick={onSave}
-          disabled={profileLoading}>
+          disabled={profileLoading || profileSaving}>
           {profileLoading ? (
             <>
               <span className="settings-spinner" /> Saving…

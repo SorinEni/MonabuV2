@@ -1,10 +1,17 @@
 import Toggle from "./Toggle";
+import TimezoneCombobox from "./TimezoneCombobox";
+import LanguageSelect from "./LanguageSelect";
 
 export default function AccountTab({
   user,
   hasPassword,
+  timezone,
+  setTimezone,
+  language,
+  setLanguage,
   leaderboardPublic,
-  setLeaderboardPublic,
+  leaderboardToggling,
+  onLeaderboardToggle,
   logoutAllLoading,
   onLogoutAll,
   onOpenDeleteData,
@@ -17,42 +24,6 @@ export default function AccountTab({
           <div className="settings-section__title">Account details</div>
         </div>
         <div className="settings-section__body" style={{ gap: 0 }}>
-          <div className="settings-row">
-            <div className="settings-row__left">
-              <div className="settings-row__label">Email</div>
-              <div className="settings-row__desc">{user?.email}</div>
-            </div>
-            <div className="settings-row__right">
-              {user?.isVerified ? (
-                <span className="settings-badge settings-badge--verified">
-                  Verified
-                </span>
-              ) : (
-                <span
-                  className="settings-badge"
-                  style={{
-                    background: "var(--color-warning-dim)",
-                    border: "1px solid var(--color-warning-border)",
-                    color: "var(--color-warning)",
-                  }}>
-                  Unverified
-                </span>
-              )}
-            </div>
-          </div>
-          <div className="settings-row">
-            <div className="settings-row__left">
-              <div className="settings-row__label">Plan</div>
-              <div className="settings-row__desc">
-                Your current subscription tier.
-              </div>
-            </div>
-            <div className="settings-row__right">
-              <span className="settings-badge settings-badge--plan">
-                {user?.plan ?? "free"}
-              </span>
-            </div>
-          </div>
           <div className="settings-row">
             <div className="settings-row__left">
               <div className="settings-row__label">Sign-in method</div>
@@ -82,6 +53,31 @@ export default function AccountTab({
         </div>
       </div>
 
+      {/* Localisation */}
+      <div className="settings-section">
+        <div className="settings-section__header">
+          <div className="settings-section__title">Localisation</div>
+          <div className="settings-section__desc">
+            Timezone and language used across the app.
+          </div>
+        </div>
+        <div className="settings-section__body">
+          <div className="settings-field">
+            <label className="settings-label" htmlFor="s-tz">
+              Timezone
+            </label>
+            <TimezoneCombobox value={timezone} onChange={setTimezone} />
+          </div>
+          <div className="settings-field">
+            <label className="settings-label">Language</label>
+            <LanguageSelect value={language} onChange={setLanguage} />
+            <div style={{ fontSize: 11.5, color: "var(--text-faint)", marginTop: 4 }}>
+              Affects default tag names and app language
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div className="settings-section">
         <div className="settings-section__header">
           <div className="settings-section__title">Leaderboard</div>
@@ -105,7 +101,8 @@ export default function AccountTab({
               <Toggle
                 id="leaderboard-public"
                 checked={leaderboardPublic}
-                onChange={setLeaderboardPublic}
+                onChange={onLeaderboardToggle}
+                disabled={leaderboardToggling}
               />
             </div>
           </div>

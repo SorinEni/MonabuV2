@@ -8,15 +8,15 @@
   align-items: flex-start;
   justify-content: center;
   min-height: 100vh;
-  padding: 60px 48px;
+  padding: 3.75rem 3rem;
 }
 
 .donate-page__inner {
   width: 100%;
-  max-width: 700px;
+  max-width: 43.75rem;
   display: flex;
   flex-direction: column;
-  gap: 32px;
+  gap: 2rem;
 }
 
 /*  Header  */
@@ -24,28 +24,28 @@
 .donate-page__header {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 1rem;
 }
 
 .donate-page__eyebrow {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 0.5rem;
   background: var(--accent-dim);
   border: 1px solid var(--accent-border);
   color: var(--accent);
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 500;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  padding: 5px 14px;
+  padding: 0.3125rem 0.875rem;
   border-radius: 100px;
   width: fit-content;
 }
 
 .donate-page__eyebrow-dot {
-  width: 6px;
-  height: 6px;
+  width: 0.375rem;
+  height: 0.375rem;
   background: var(--accent);
   border-radius: 50%;
   animation: blink 2.2s ease-in-out infinite;
@@ -53,9 +53,9 @@
 
 .donate-page__title {
   font-family: var(--font-serif);
-  font-size: clamp(30px, 4.5vw, 46px);
+  font-size: clamp(1.875rem, 4.5vw, 2.875rem);
   font-weight: 400;
-  letter-spacing: -1px;
+  letter-spacing: -0.0625rem;
   color: var(--text);
   line-height: 1.18;
 }
@@ -66,10 +66,10 @@
 }
 
 .donate-page__subtitle {
-  font-size: 15px;
+  font-size: 0.9375rem;
   color: var(--text-muted);
   line-height: 1.65;
-  max-width: 540px;
+  max-width: 33.75rem;
 }
 
 /*  Dev cards  */
@@ -77,17 +77,17 @@
 .donate-devs {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 12px;
+  gap: 0.75rem;
 }
 
 .donate-dev-card {
   background: var(--bg-2);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 22px 22px 18px;
+  padding: 1.375rem 1.375rem 1.125rem;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 0.75rem;
   transition:
     border-color var(--transition-base),
     background var(--transition-base);
@@ -99,58 +99,58 @@
 }
 
 .donate-dev-card__avatar {
-  width: 46px;
-  height: 46px;
-  border-radius: 10px;
+  width: 2.875rem;
+  height: 2.875rem;
+  border-radius: 0.625rem;
   background: var(--accent-dim);
   border: 1px solid var(--accent-border);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 22px;
+  font-size: 1.375rem;
 }
 
 .donate-dev-card__info {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 0.25rem;
   flex: 1;
 }
 
 .donate-dev-card__name {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 600;
   color: var(--text);
 }
 
 .donate-dev-card__role {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: var(--accent);
   font-weight: 500;
   letter-spacing: 0.02em;
 }
 
 .donate-dev-card__fact {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: var(--text-faint);
   line-height: 1.5;
-  margin-top: 4px;
+  margin-top: 0.25rem;
   font-style: italic;
 }
 
 .donate-dev-card__links {
   display: flex;
-  gap: 8px;
-  padding-top: 4px;
+  gap: 0.5rem;
+  padding-top: 0.25rem;
 }
 
 .donate-dev-card__link {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 34px;
-  height: 34px;
-  border-radius: 8px;
+  width: 2.125rem;
+  height: 2.125rem;
+  border-radius: 0.5rem;
   border: 1px solid var(--border);
   color: var(--text-muted);
   background: var(--surface-subtle);
@@ -183,11 +183,11 @@
 .donate-bmac {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 0.75rem;
 }
 
 .donate-tiers__label {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 500;
   letter-spacing: 0.13em;
   text-transform: uppercase;
@@ -199,8 +199,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 20px;
-  padding: 24px 26px;
+  gap: 1.25rem;
+  padding: 1.5rem 1.625rem;
   border-radius: var(--radius);
   border: 1px solid rgba(245, 158, 11, 0.2);
   background: rgba(245, 158, 11, 0.04);
@@ -214,7 +214,7 @@
 }
 
 .donate-bmac-card:hover {
-  transform: translateY(-2px);
+  transform: translateY(-0.125rem);
   border-color: rgba(245, 158, 11, 0.35);
   background: rgba(245, 158, 11, 0.07);
 }
@@ -226,13 +226,13 @@
 .donate-bmac-card__left {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 1rem;
 }
 
 .donate-bmac-card__icon {
-  width: 44px;
-  height: 44px;
-  border-radius: 10px;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 0.625rem;
   background: rgba(245, 158, 11, 0.1);
   border: 1px solid rgba(245, 158, 11, 0.25);
   color: #f59e0b;
@@ -243,20 +243,20 @@
 }
 
 .donate-bmac-card__title {
-  font-size: 14.5px;
+  font-size: 0.90625rem;
   font-weight: 600;
   color: var(--text);
 }
 
 .donate-bmac-card__sub {
-  font-size: 12.5px;
+  font-size: 0.78125rem;
   color: var(--text-muted);
-  margin-top: 3px;
+  margin-top: 0.1875rem;
   line-height: 1.5;
 }
 
 .donate-bmac-card__cta {
-  font-size: 12.5px;
+  font-size: 0.78125rem;
   font-weight: 500;
   color: #f59e0b;
   white-space: nowrap;
@@ -289,8 +289,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 20px;
-  padding: 22px 26px;
+  gap: 1.25rem;
+  padding: 1.375rem 1.625rem;
   border-radius: var(--radius);
   border: 1px solid rgba(255, 94, 91, 0.2);
   background: rgba(255, 94, 91, 0.05);
@@ -304,7 +304,7 @@
 }
 
 .donate-kofi-banner:hover {
-  transform: translateY(-2px);
+  transform: translateY(-0.125rem);
   border-color: rgba(255, 94, 91, 0.35);
   background: rgba(255, 94, 91, 0.08);
 }
@@ -316,13 +316,13 @@
 .donate-kofi-banner__left {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 1rem;
 }
 
 .donate-kofi-banner__icon {
-  width: 42px;
-  height: 42px;
-  border-radius: 10px;
+  width: 2.625rem;
+  height: 2.625rem;
+  border-radius: 0.625rem;
   background: rgba(255, 94, 91, 0.12);
   border: 1px solid rgba(255, 94, 91, 0.25);
   color: #ff5e5b;
@@ -333,19 +333,19 @@
 }
 
 .donate-kofi-banner__title {
-  font-size: 14.5px;
+  font-size: 0.90625rem;
   font-weight: 600;
   color: var(--text);
 }
 
 .donate-kofi-banner__sub {
-  font-size: 12.5px;
+  font-size: 0.78125rem;
   color: var(--text-muted);
-  margin-top: 2px;
+  margin-top: 0.125rem;
 }
 
 .donate-kofi-banner__cta {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 500;
   color: #ff5e5b;
   white-space: nowrap;
@@ -369,4 +369,42 @@
     transparent 60%
   );
   transition: opacity var(--transition-slow);
+}
+
+/*  Responsive  */
+
+@media (max-width: 40rem) {
+  .donate-page {
+    padding: 2.5rem 1.25rem;
+  }
+
+  .donate-page__inner {
+    gap: 1.5rem;
+  }
+
+  .donate-bmac-card,
+  .donate-kofi-banner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .donate-bmac-card__cta,
+  .donate-kofi-banner__cta {
+    align-self: flex-start;
+  }
+}
+
+@media (max-width: 25rem) {
+  .donate-page {
+    padding: 2rem 1rem;
+  }
+
+  .donate-page__subtitle {
+    font-size: 0.875rem;
+  }
+
+  .donate-dev-card {
+    padding: 1.125rem 1.125rem 0.875rem;
+  }
 }

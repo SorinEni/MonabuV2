@@ -473,8 +473,8 @@
 }
 
 .settings-save-btn {
+  margin-left: auto;
   display: inline-flex;
-  align-items: center;
   gap: 7px;
   font-family: var(--font-sans);
   font-size: 13.5px;
@@ -1527,4 +1527,18 @@
   .import-map-select {
     width: 100%;
   }
+}
+
+/* ─── Debounce / spam-prevention disabled states ─────────────── */
+
+.settings-save-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.settings-toggle input:disabled + .settings-toggle__track {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
 }

@@ -16,6 +16,7 @@ export default function PasswordTab({
   showConfirm,
   setShowConfirm,
   pwLoading,
+  pwSaving,
   pwError,
   onPasswordSave,
   // Create password
@@ -26,6 +27,7 @@ export default function PasswordTab({
   showCreatePw,
   setShowCreatePw,
   createPwLoading,
+  createPwSaving,
   createPwError,
   onCreatePassword,
 }) {
@@ -82,7 +84,7 @@ export default function PasswordTab({
             type="button"
             className={`settings-save-btn${createPwLoading ? " settings-save-btn--loading" : ""}`}
             onClick={onCreatePassword}
-            disabled={createPwLoading}>
+            disabled={createPwLoading || createPwSaving}>
             {createPwLoading ? (
               <>
                 <span className="settings-spinner" /> Saving…
@@ -179,7 +181,7 @@ export default function PasswordTab({
           type="button"
           className={`settings-save-btn${pwLoading ? " settings-save-btn--loading" : ""}`}
           onClick={onPasswordSave}
-          disabled={pwLoading}>
+          disabled={pwLoading || pwSaving}>
           {pwLoading ? (
             <>
               <span className="settings-spinner" /> Saving…

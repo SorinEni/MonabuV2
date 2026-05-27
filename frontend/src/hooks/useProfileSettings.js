@@ -6,49 +6,100 @@ import { useState, useRef, useEffect } from "react";
 import { api, updateStoredUser } from "@api/api";
 import { resolveAvatarUrl, compressImage } from "@utils/avatar";
 
+const ALL_TIMEZONES = Intl.supportedValuesOf
+  ? Intl.supportedValuesOf("timeZone")
+  : [
+      "UTC",
+      "America/New_York",
+      "America/Los_Angeles",
+      "Europe/London",
+      "Asia/Tokyo",
+      "Europe/Prague",
+    ];
+
 export function useProfileSettings(user, setUser, showToast) {
   const avatarInputRef = useRef(null);
-  const [avatarPreview, setAvatarPreview] = useState(resolveAvatarUrl(user?.avatar));
+  const [avatarPreview, setAvatarPreview] = useState(
+    resolveAvatarUrl(user?.avatar),
+  );
   const [avatarFile, setAvatarFile] = useState(null);
 
-  const [name, setName]                         = useState(user?.name || "");
-  const [username, setUsername]                 = useState(user?.username || "");
-  const [usernameError, setUsernameError]       = useState("");
-  const [timezone, setTimezone]                 = useState(user?.timezone || "UTC");
-  const [goal, setGoal]                         = useState(user?.primaryGoal || "none");
-  const [weeklyHours, setWeeklyHours]           = useState(user?.weeklyHourGoal || 10);
-  const [leaderboardPublic, setLeaderboardPublic] = useState(user?.leaderboardPublic ?? true);
-  const [language, setLanguage]                   = useState(user?.language || "en");
-  const [profileLoading, setProfileLoading]     = useState(false);
+  const [name, setName] = useState(user?.name || "");
+  const [username, setUsername] = useState(user?.username || "");
+  const [usernameError, setUsernameError] = useState("");
+  const [timezone, setTimezone] = useState(user?.timezone || "UTC");
+  const [weeklyHours, setWeeklyHours] = useState(user?.weeklyHourGoal || 10);
+  const [leaderboardPublic, setLeaderboardPublic] = useState(
+    user?.leaderboardPublic ?? true,
+  );
+  const [language, setLanguage] = useState(user?.language || "en");
+  const [profileLoading, setProfileLoading] = useState(false);
+  const [profileSaving, setProfileSaving] = useState(false);
+  const [leaderboardToggling, setLeaderboardToggling] = useState(false);
 
   useEffect(() => {
     if (!user) return;
     setName(user.name || "");
     setUsername(user.username || "");
     setTimezone(user.timezone || "UTC");
-    setGoal(user.primaryGoal || "none");
     setWeeklyHours(user.weeklyHourGoal || 10);
     setLeaderboardPublic(user.leaderboardPublic ?? true);
     setLanguage(user.language || "en");
     setAvatarPreview(resolveAvatarUrl(user.avatar));
   }, [user]);
 
+  async function handleTimezoneChange(tz) {
+    setTimezone(tz);
+    if (!ALL_TIMEZONES.includes(tz)) return; // ignore partial / invalid input
+    try {
+      const data = await api.patch("/auth/me", { timezone: tz });
+      const updated = data.user;
+      updateStoredUser(updated);
+      setUser(updated);
+      showToast("Timezone saved");
+    } catch (err) {
+      showToast(err.message || "Failed to save timezone", "error");
+    }
+  }
+
+  async function handleLanguageChange(lang) {
+    setLanguage(lang);
+    try {
+      const data = await api.patch("/auth/me", { language: lang });
+      const updated = data.user;
+      updateStoredUser(updated);
+      setUser(updated);
+      showToast("Language saved");
+    } catch (err) {
+      showToast(err.message || "Failed to save language", "error");
+    }
+  }
+
   async function handleAvatarChange(e) {
     const file = e.target.files[0];
     if (!file) return;
     if (file.size > 8 * 1024 * 1024) {
-      showToast("Error 69: That's not fitting in no matter how hard you push. 8 MB max.", "error");
+      showToast(
+        "Error 69: That's not fitting in no matter how hard you push. 8 MB max.",
+        "error",
+      );
       return;
     }
     try {
       const isGif = file.type === "image/gif";
       if (isGif && !user?.planFeatures?.includes("gif_avatar")) {
-        showToast("Animated GIFs are a Pro feature — upgrade to use them", "error");
+        showToast(
+          "Animated GIFs are a Pro feature — upgrade to use them",
+          "error",
+        );
         e.target.value = "";
         return;
       }
       if (!isGif && file.size > 5 * 1024 * 1024) {
-        showToast("Error 69: I swear this never happens.. but it's just too big, I can't handle it, 5 MB max.", "error");
+        showToast(
+          "Error 69: I swear this never happens.. but it's just too big, I can't handle it, 5 MB max.",
+          "error",
+        );
         return;
       }
       if (isGif) {
@@ -73,7 +124,26 @@ export function useProfileSettings(user, setUser, showToast) {
     setAvatarFile(null);
   }
 
+  async function handleLeaderboardToggle(value) {
+    if (leaderboardToggling) return;
+    setLeaderboardToggling(true);
+    setLeaderboardPublic(value);
+    try {
+      const data = await api.patch("/auth/me", { leaderboardPublic: value });
+      const updated = data.user;
+      updateStoredUser(updated);
+      setUser(updated);
+    } catch (err) {
+      setLeaderboardPublic(!value);
+      showToast(err.message || "Failed to update leaderboard setting", "error");
+    } finally {
+      setTimeout(() => setLeaderboardToggling(false), 500);
+    }
+  }
+
   async function handleProfileSave() {
+    if (profileSaving) return;
+    setProfileSaving(true);
     setProfileLoading(true);
     try {
       let newAvatarUrl = null;
@@ -90,7 +160,10 @@ export function useProfileSettings(user, setUser, showToast) {
           body: form,
         });
         const data = await res.json();
-        if (!res.ok) throw new Error("Avatar upload failed. We appreciate the impressive size, but it's stretching our limits.");
+        if (!res.ok)
+          throw new Error(
+            "Avatar upload failed. We appreciate the impressive size, but it's stretching our limits.",
+          );
         newAvatarUrl = data.avatar;
         updateStoredUser(data.user);
         setAvatarPreview(resolveAvatarUrl(newAvatarUrl));
@@ -102,11 +175,13 @@ export function useProfileSettings(user, setUser, showToast) {
         if (cleaned.length < 2 || cleaned.length > 32) {
           setUsernameError("Username must be between 2 and 32 characters.");
           setProfileLoading(false);
+          setTimeout(() => setProfileSaving(false), 500);
           return;
         }
         if (!/^[a-z0-9_.-]+$/.test(cleaned)) {
           setUsernameError("Only letters, numbers, and . _ - are allowed.");
           setProfileLoading(false);
+          setTimeout(() => setProfileSaving(false), 500);
           return;
         }
         setUsernameError("");
@@ -121,14 +196,15 @@ export function useProfileSettings(user, setUser, showToast) {
 
       const payload = {
         timezone,
-        primaryGoal: goal,
         weeklyHourGoal: weeklyHours,
         leaderboardPublic,
         language,
       };
       if (!nameCooldownLocked) payload.name = name;
-      if (user?.tempUsername && username && username !== user?.username) payload.username = username;
-      if (!avatarPreview && !newAvatarUrl && user?.avatar) payload.avatar = null;
+      if (user?.tempUsername && username && username !== user?.username)
+        payload.username = username;
+      if (!avatarPreview && !newAvatarUrl && user?.avatar)
+        payload.avatar = null;
 
       const data = await api.patch("/auth/me", payload);
       const updated = data.user;
@@ -142,6 +218,7 @@ export function useProfileSettings(user, setUser, showToast) {
       showToast(err.message || "Failed to save profile", "error");
     } finally {
       setProfileLoading(false);
+      setTimeout(() => setProfileSaving(false), 500);
     }
   }
 
@@ -149,15 +226,24 @@ export function useProfileSettings(user, setUser, showToast) {
     avatarInputRef,
     avatarPreview,
     avatarFile,
-    name, setName,
-    username, setUsername,
-    usernameError, setUsernameError,
-    timezone, setTimezone,
-    goal, setGoal,
-    weeklyHours, setWeeklyHours,
-    leaderboardPublic, setLeaderboardPublic,
-    language, setLanguage,
+    name,
+    setName,
+    username,
+    setUsername,
+    usernameError,
+    setUsernameError,
+    timezone,
+    setTimezone: handleTimezoneChange,
+    weeklyHours,
+    setWeeklyHours,
+    leaderboardPublic,
+    setLeaderboardPublic,
+    leaderboardToggling,
+    onLeaderboardToggle: handleLeaderboardToggle,
+    language,
+    setLanguage: handleLanguageChange,
     profileLoading,
+    profileSaving,
     onAvatarChange: handleAvatarChange,
     onRemoveAvatar: handleRemoveAvatar,
     onSave: handleProfileSave,

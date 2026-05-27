@@ -16,20 +16,24 @@ export function usePasswordSettings(setUser, showToast) {
   const [showNew,     setShowNew]     = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [pwLoading,   setPwLoading]   = useState(false);
+  const [pwSaving,    setPwSaving]    = useState(false);
   const [pwError,     setPwError]     = useState("");
 
   // Create password (for OAuth-only accounts)
-  const [createPw,       setCreatePw]       = useState("");
+  const [createPw,        setCreatePw]        = useState("");
   const [createConfirmPw, setCreateConfirmPw] = useState("");
-  const [showCreatePw,   setShowCreatePw]   = useState(false);
+  const [showCreatePw,    setShowCreatePw]    = useState(false);
   const [createPwLoading, setCreatePwLoading] = useState(false);
-  const [createPwError,  setCreatePwError]  = useState("");
+  const [createPwSaving,  setCreatePwSaving]  = useState(false);
+  const [createPwError,   setCreatePwError]   = useState("");
 
   async function handlePasswordSave() {
+    if (pwSaving) return;
     setPwError("");
     if (!currentPw || !newPw || !confirmPw) { setPwError("All fields are required."); return; }
     if (newPw !== confirmPw) { setPwError("New passwords don't match."); return; }
     if (newPw.length < 8) { setPwError("Password must be at least 8 characters."); return; }
+    setPwSaving(true);
     setPwLoading(true);
     try {
       const data = await api.post("/auth/change-password", {
@@ -43,14 +47,17 @@ export function usePasswordSettings(setUser, showToast) {
       setPwError(err.message || "Failed to change password");
     } finally {
       setPwLoading(false);
+      setTimeout(() => setPwSaving(false), 500);
     }
   }
 
   async function handleCreatePassword() {
+    if (createPwSaving) return;
     setCreatePwError("");
     if (!createPw || !createConfirmPw) { setCreatePwError("All fields are required."); return; }
     if (createPw !== createConfirmPw) { setCreatePwError("Passwords don't match."); return; }
     if (createPw.length < 8) { setCreatePwError("Password must be at least 8 characters."); return; }
+    setCreatePwSaving(true);
     setCreatePwLoading(true);
     try {
       const data = await api.post("/auth/create-password", { password: createPw });
@@ -62,6 +69,7 @@ export function usePasswordSettings(setUser, showToast) {
       setCreatePwError(err.message || "Failed to create password");
     } finally {
       setCreatePwLoading(false);
+      setTimeout(() => setCreatePwSaving(false), 500);
     }
   }
 
@@ -72,12 +80,12 @@ export function usePasswordSettings(setUser, showToast) {
     showCurrent, setShowCurrent,
     showNew, setShowNew,
     showConfirm, setShowConfirm,
-    pwLoading, pwError,
+    pwLoading, pwSaving, pwError,
     onPasswordSave: handlePasswordSave,
     createPw, setCreatePw,
     createConfirmPw, setCreateConfirmPw,
     showCreatePw, setShowCreatePw,
-    createPwLoading, createPwError,
+    createPwLoading, createPwSaving, createPwError,
     onCreatePassword: handleCreatePassword,
   };
 }

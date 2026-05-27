@@ -24,7 +24,12 @@ export default function PomodoroTab({
   pomoSettings,
   setPomoSettings,
   pomoLoading,
+  pomoSaving,
+  autoBreakToggling,
+  autoWorkToggling,
   onSave,
+  onAutoBreakToggle,
+  onAutoWorkToggle,
 }) {
   return (
     <>
@@ -103,9 +108,8 @@ export default function PomodoroTab({
               <Toggle
                 id="auto-break"
                 checked={pomoSettings.autoStartBreak}
-                onChange={(v) =>
-                  setPomoSettings((p) => ({ ...p, autoStartBreak: v }))
-                }
+                onChange={onAutoBreakToggle}
+                disabled={autoBreakToggling}
               />
             </div>
           </div>
@@ -120,9 +124,8 @@ export default function PomodoroTab({
               <Toggle
                 id="auto-work"
                 checked={pomoSettings.autoStartWork}
-                onChange={(v) =>
-                  setPomoSettings((p) => ({ ...p, autoStartWork: v }))
-                }
+                onChange={onAutoWorkToggle}
+                disabled={autoWorkToggling}
               />
             </div>
           </div>
@@ -134,7 +137,7 @@ export default function PomodoroTab({
           type="button"
           className={`settings-save-btn${pomoLoading ? " settings-save-btn--loading" : ""}`}
           onClick={onSave}
-          disabled={pomoLoading}>
+          disabled={pomoLoading || pomoSaving}>
           {pomoLoading ? (
             <>
               <span className="settings-spinner" /> Saving…
