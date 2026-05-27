@@ -1,0 +1,21 @@
+{
+  "name": "monabu",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
+  "scripts": {
+    "install-all": "npm install",
+    "dev": "concurrently \"npm run dev --workspace=frontend\" \"npm run dev --workspace=backend\"",
+    "frontend": "npm run dev --workspace=frontend",
+    "backend": "npm run dev --workspace=backend",
+    "prod": "node --env-file=backend/.env.production backend/server.js",
+    "purge": "node --env-file=backend/.env.production backend/scripts/purgeDeletedAccounts.js"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "cross-env": "^10.1.0"
+  }
+}

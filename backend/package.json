@@ -1,0 +1,45 @@
+{
+  "name": "backend",
+  "version": "0.0.0",
+  "type": "module",
+  "imports": {
+    "#/*": "./*.js",
+    "#controllers/*": "./controllers/*.js",
+    "#models/*": "./models/*.js",
+    "#routes/*": "./routes/*.js",
+    "#middleware/*": "./middleware/*.js",
+    "#utils/*": "./utils/*.js",
+    "#constants/*": "./constants/*.js",
+    "#scripts/*": "./scripts/*.js",
+    "#data/*": "./data/*"
+  },
+  "scripts": {
+    "start": "node --env-file=.env.production server.js",
+    "dev": "nodemon --exec \"node --env-file=.env.development\" server.js",
+    "purge": "node --env-file=.env.production scripts/purgeDeletedAccounts.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.6",
+    "disposable-email-domains": "^1.0.62",
+    "dotenv": "^16.6.1",
+    "express": "^4.22.1",
+    "express-rate-limit": "^7.4.0",
+    "express-session": "^1.19.0",
+    "geoip-lite": "^2.0.2",
+    "google-auth-library": "^9.14.0",
+    "jsonwebtoken": "^9.0.3",
+    "mongodb": "^7.2.0",
+    "mongoose": "^9.6.2",
+    "multer": "^2.1.1",
+    "node-cron": "^4.2.1",
+    "nodemailer": "^8.0.7",
+    "passport": "^0.7.0",
+    "passport-google-oauth20": "^2.0.0",
+    "passport-local": "^1.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}

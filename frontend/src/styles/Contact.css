@@ -1,0 +1,218 @@
+/*
+   Contact.css — Contact page styles
+   Depends on: globals.css
+*/
+
+.contact-page {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 60px 48px;
+}
+
+.contact-page__inner {
+  width: 100%;
+  max-width: 680px;
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+}
+
+/* Header */
+.contact-page__header {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.contact-page__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--accent-dim);
+  border: 1px solid var(--accent-border);
+  color: var(--accent);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 5px 14px;
+  border-radius: 100px;
+  width: fit-content;
+}
+
+.contact-page__eyebrow-dot {
+  width: 6px;
+  height: 6px;
+  background: var(--accent);
+  border-radius: 50%;
+  animation: blink 2.2s ease-in-out infinite;
+}
+
+.contact-page__title {
+  font-family: var(--font-serif);
+  font-size: clamp(28px, 4vw, 40px);
+  font-weight: 400;
+  letter-spacing: -0.8px;
+  color: var(--text);
+  line-height: 1.2;
+}
+
+.contact-page__subtitle {
+  font-size: 15px;
+  color: var(--text-muted);
+  line-height: 1.6;
+  max-width: 520px;
+}
+
+/* Cards */
+.contact-page__cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 12px;
+}
+
+.contact-card {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+  padding: 24px 26px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--bg-2);
+  text-decoration: none;
+  color: inherit;
+  overflow: hidden;
+  transition:
+    border-color var(--transition-base),
+    transform var(--transition-base),
+    background var(--transition-base);
+}
+
+.contact-card:hover {
+  transform: translateY(-2px);
+}
+
+.contact-card:hover .contact-card__glow {
+  opacity: 1;
+}
+
+/* Per-platform accent colors */
+.contact-card--discord {
+  --card-accent: #5865f2;
+  --card-accent-dim: rgba(88, 101, 242, 0.1);
+  --card-accent-border: rgba(88, 101, 242, 0.25);
+}
+.contact-card--reddit {
+  --card-accent: #ff4500;
+  --card-accent-dim: rgba(255, 69, 0, 0.08);
+  --card-accent-border: rgba(255, 69, 0, 0.2);
+}
+.contact-card--email {
+  --card-accent: var(--accent);
+  --card-accent-dim: var(--accent-dim);
+  --card-accent-border: var(--accent-border);
+}
+
+.contact-card:hover {
+  border-color: var(--card-accent-border);
+  background: var(--bg-3);
+}
+
+/* Icon */
+.contact-card__icon {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background: var(--card-accent-dim);
+  border: 1px solid var(--card-accent-border);
+  color: var(--card-accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 2px;
+  transition: background var(--transition-base);
+}
+
+.contact-card:hover .contact-card__icon {
+  background: var(--card-accent-dim);
+}
+
+/* Body */
+.contact-card__body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.contact-card__name {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: -0.1px;
+}
+
+.contact-card__desc {
+  font-size: 13.5px;
+  color: var(--text-muted);
+  line-height: 1.55;
+}
+
+.contact-card__cta {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--card-accent);
+  margin-top: 4px;
+  opacity: 0.85;
+  transition: opacity var(--transition-fast);
+}
+
+.contact-card:hover .contact-card__cta {
+  opacity: 1;
+}
+
+/* Glow effect on hover */
+.contact-card__glow {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  background: radial-gradient(
+    ellipse at 0% 50%,
+    var(--card-accent-dim) 0%,
+    transparent 60%
+  );
+  transition: opacity var(--transition-slow);
+}
+
+/* Footer note */
+.contact-page__note {
+  font-size: 12.5px;
+  color: var(--text-faint);
+  text-align: center;
+  line-height: 1.5;
+}
+
+/* Light theme adjustments */
+.app-shell.theme-light .contact-card {
+  background: var(--bg-2);
+  border-color: var(--border);
+}
+.app-shell.theme-light .contact-card:hover {
+  background: var(--bg-3);
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .contact-page {
+    padding: 40px 20px;
+  }
+  .contact-card {
+    flex-direction: column;
+    gap: 14px;
+  }
+}

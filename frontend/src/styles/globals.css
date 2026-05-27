@@ -1,0 +1,462 @@
+/*
+   globals.css — Design tokens, base reset, shared utilities
+   Import this file FIRST in your entry point.
+   index.css is fully superseded by the reset block below.
+*/
+
+/* Font Imports */
+@import url("https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Geist:wght@300;400;500;600&display=swap");
+
+/* Dark Theme Tokens (default / :root) */
+:root {
+  /* Backgrounds */
+  --bg: #070709;
+  --bg-2: #0d0d12;
+  --bg-3: #12121a;
+
+  /* Borders */
+  --border: rgba(255, 255, 255, 0.07);
+  --border-2: rgba(255, 255, 255, 0.12);
+
+  /* Text */
+  --text: #e2e0dc;
+  --text-muted: rgba(226, 224, 220, 0.58);
+  --text-faint: rgba(226, 224, 220, 0.35);
+
+  /* Accent (blue-300 on dark) */
+  --accent: #93c5fd;
+  --accent-dim: rgba(147, 197, 253, 0.12);
+  --accent-border: rgba(147, 197, 253, 0.22);
+
+  /* Semantic: Success */
+  --color-success: #4ade80;
+  --color-success-dim: rgba(74, 222, 128, 0.1);
+  --color-success-border: rgba(74, 222, 128, 0.2);
+
+  /* Semantic: Warning */
+  --color-warning: #fb923c;
+  --color-warning-dim: rgba(251, 146, 60, 0.1);
+  --color-warning-border: rgba(251, 146, 60, 0.4);
+
+  /* Semantic: Error */
+  --color-error: #f87171;
+  --color-error-dim: rgba(248, 113, 113, 0.1);
+  --color-error-border: rgba(248, 113, 113, 0.25);
+
+  /* Special overrides */
+  --color-on-accent: #06060a; /* dark text on accent bg */
+  --color-cell-dark-text: #0f172a; /* deep navy for high-lv calendar cells */
+  --color-logout-hover: #fca5a5;
+  --color-logout-hover-bg: rgba(252, 165, 165, 0.08);
+
+  /* Typography */
+  --font-serif: "Libre Baskerville", serif;
+  --font-sans: "Geist", sans-serif;
+
+  /* Radius */
+  --radius: 12px;
+  --radius-sm: 8px;
+  --radius-lg: 16px;
+
+  /* Transitions */
+  --transition-fast: 0.12s;
+  --transition-base: 0.15s;
+  --transition-slow: 0.22s;
+  --transition-ui:
+    background var(--transition-base), color var(--transition-base);
+
+  /* Surface tints */
+  --surface-hover-light: rgba(255, 255, 255, 0.05);
+  --surface-hover-mid: rgba(255, 255, 255, 0.08);
+  --surface-subtle: rgba(255, 255, 255, 0.04);
+  --surface-bar-track: rgba(255, 255, 255, 0.05);
+}
+
+/*
+   Light Theme Tokens
+   Scoped to .app-shell.theme-light so the
+   public landing page (:root dark tokens)
+   is never touched.
+*/
+.app-shell.theme-light {
+  --bg: #f5f4f1;
+  --bg-2: #faf9f7;
+  --bg-3: #ffffff;
+
+  --border: rgba(30, 25, 20, 0.09);
+  --border-2: rgba(30, 25, 20, 0.15);
+
+  --text: #1a1714;
+  --text-muted: rgba(26, 23, 20, 0.55);
+  --text-faint: rgba(26, 23, 20, 0.32);
+
+  --accent: #467bed;
+  --color-on-accent: white;
+  --accent-dim: rgba(37, 99, 235, 0.08);
+  --accent-border: rgba(37, 99, 235, 0.2);
+
+  --surface-hover-light: rgba(0, 0, 0, 0.04);
+  --surface-hover-mid: rgba(0, 0, 0, 0.07);
+  --surface-subtle: rgba(0, 0, 0, 0.03);
+  --surface-bar-track: rgba(30, 25, 20, 0.07);
+}
+
+/* Propagate bg + text onto the shell */
+.app-shell.theme-light,
+.app-shell.theme-light .app-main {
+  background: var(--bg);
+  color: var(--text);
+}
+
+/* Global Reset */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.root {
+  min-height: 100vh;
+}
+
+/* App Shell — shared by Tracker and Analytics pages */
+.app-shell {
+  display: flex;
+  min-height: 100vh;
+  background: var(--bg);
+}
+
+.app-main {
+  flex: 1;
+  min-width: 0;
+  overflow-x: hidden;
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: none;
+  cursor: pointer;
+  font-family: var(--font-sans);
+  font-weight: 500;
+  border-radius: var(--radius-sm);
+  transition:
+    opacity var(--transition-base),
+    transform var(--transition-base),
+    background var(--transition-base);
+  padding: 11px 22px;
+  font-size: 15px;
+}
+.btn:hover {
+  transform: translateY(-1px);
+}
+
+.btn--primary {
+  background: var(--accent);
+  color: var(--color-on-accent);
+}
+.btn--primary:hover {
+  opacity: 0.88;
+}
+
+.btn--ghost {
+  background: var(--surface-hover-light);
+  color: var(--text-muted);
+  border: 1px solid var(--border-2);
+}
+.btn--ghost:hover {
+  background: var(--surface-hover-mid);
+  color: var(--text);
+}
+
+.btn--sm {
+  padding: 7px 16px;
+  font-size: 13px;
+}
+.btn--lg {
+  padding: 14px 32px;
+  font-size: 16px;
+}
+
+/* Navigation */
+.nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 48px;
+  transition:
+    background 0.3s,
+    border-color 0.3s,
+    backdrop-filter 0.3s;
+}
+.nav--scrolled {
+  background: rgba(7, 7, 9, 0.82);
+  backdrop-filter: blur(18px);
+  border-bottom: 1px solid var(--border);
+}
+
+.nav__logo {
+  font-family: var(--font-serif);
+  font-size: 19px;
+  color: #fff;
+  letter-spacing: -0.2px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+.nav__logo-mark {
+  width: 8px;
+  height: 8px;
+  background: var(--accent);
+  border-radius: 50%;
+}
+
+.nav__links {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+/* Nav links + login share base interactive styles */
+.nav__link,
+.nav__login {
+  background: none;
+  border: none;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: var(--transition-ui);
+}
+.nav__link {
+  padding: 6px 12px;
+  border-radius: 6px;
+}
+.nav__link:hover {
+  color: var(--text);
+  background: var(--surface-hover-light);
+}
+.nav__link--active {
+  color: var(--text);
+  background: var(--surface-hover-light);
+}
+.nav__login {
+  padding: 6px 10px;
+}
+.nav__login:hover {
+  color: var(--text);
+}
+
+.nav__actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Eyebrow badge */
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--accent-dim);
+  border: 1px solid var(--accent-border);
+  color: var(--accent);
+  font-size: 11.5px;
+  font-weight: 500;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  padding: 5px 14px;
+  border-radius: 100px;
+  margin-bottom: 28px;
+}
+.eyebrow__dot {
+  width: 6px;
+  height: 6px;
+  background: var(--accent);
+  border-radius: 50%;
+  animation: blink 2.2s ease-in-out infinite;
+}
+
+/* Section helpers */
+.section-label {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  margin-bottom: 16px;
+}
+
+.section-heading {
+  font-family: var(--font-serif);
+  font-size: clamp(30px, 3.2vw, 46px);
+  font-weight: 400;
+  letter-spacing: -1px;
+  color: #fff;
+  line-height: 1.15;
+}
+.section-heading em {
+  font-style: italic;
+  color: var(--accent);
+}
+
+/* Bottom CTA */
+.bottom-cta {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 120px 48px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+.bottom-cta__heading {
+  font-family: var(--font-serif);
+  font-size: clamp(34px, 4vw, 58px);
+  font-weight: 400;
+  letter-spacing: -1.5px;
+  color: #fff;
+  max-width: 560px;
+  line-height: 1.1;
+  margin-bottom: 18px;
+}
+.bottom-cta__heading em {
+  font-style: italic;
+  color: var(--accent);
+}
+.bottom-cta__sub {
+  font-size: 15px;
+  color: var(--text-faint);
+  margin-bottom: 36px;
+  font-weight: 300;
+}
+
+/* Footer */
+.footer {
+  border-top: 1px solid var(--border);
+}
+.footer__inner {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 28px 48px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.footer__logo,
+.footer__copy {
+  font-size: 12.5px;
+  color: var(--text-faint);
+}
+.footer__logo {
+  font-family: var(--font-serif);
+  font-size: 15px;
+}
+
+/* Skeleton loader */
+.skeleton {
+  width: 100%;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.07);
+  animation: skeleton-pulse 1.6s ease-in-out infinite;
+}
+.app-shell.theme-light .skeleton {
+  background: rgba(30, 25, 20, 0.08);
+}
+
+/* Animations */
+@keyframes blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.25;
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes skeleton-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
+}
+
+@keyframes dropdown-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes overlay-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive */
+@media (max-width: 960px) {
+  .nav {
+    padding: 16px 24px;
+  }
+  .nav__links {
+    display: none;
+  }
+  .bottom-cta {
+    padding: 80px 24px;
+  }
+  .footer__inner {
+    padding: 24px;
+  }
+}

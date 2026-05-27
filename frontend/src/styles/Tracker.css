@@ -1,0 +1,1829 @@
+/*
+  Tracker.css — Rebuilt tracker page
+  Visual DNA from oldTracker.css:
+    • timer-card has background, border, border-radius, padding
+    • sessions-card has same treatment
+    • left column is sticky, fixed width, right column fills remaining
+    • old-style timer display (serif, large)
+    • pomodoro inline settings panel (grid layout, stepper, opt pills, toggles)
+  Depends on: globals.css, Sidebar.css
+*/
+
+/*  Light theme overrides  */
+
+.app-shell.theme-light .timer-card,
+.app-shell.theme-light .sessions-card {
+  background: var(--bg-3);
+  box-shadow:
+    0 2px 12px rgba(30, 25, 20, 0.06),
+    0 0 0 1px var(--border);
+}
+.app-shell.theme-light .tag-picker__dropdown {
+  box-shadow:
+    0 8px 32px rgba(30, 25, 20, 0.12),
+    0 0 0 1px var(--border-2);
+}
+.app-shell.theme-light .modal {
+  box-shadow:
+    0 16px 48px rgba(30, 25, 20, 0.14),
+    0 0 0 1px var(--border-2);
+}
+.app-shell.theme-light .pomo-settings {
+  background: #f0ede8;
+  border-color: var(--border);
+}
+.app-shell.theme-light .pomo-stepper {
+  background: var(--bg-3);
+  border-color: var(--border-2);
+}
+.app-shell.theme-light .timer-note {
+  background: #f0ede8;
+  border-color: var(--border);
+}
+.app-shell.theme-light .session-row:hover,
+.app-shell.theme-light .session-row--latest {
+  background: rgba(30, 25, 20, 0.035);
+}
+.app-shell.theme-light .modal__input,
+.app-shell.theme-light .timer-session-name {
+  background: var(--bg-3);
+  border-color: var(--border-2);
+}
+.app-shell.theme-light .tag-picker__trigger {
+  background: var(--bg-3);
+  border-color: var(--border-2);
+}
+
+/*  Light theme: make the stopwatch & pomodoro rings visible  */
+/*
+  In dark mode the ring track is rgba(255,255,255,0.055) which is invisible on
+  a light (#fff) background. Override with a clearly visible mid-grey track and
+  map the glow to a soft blue shadow so the progress arc still pops.
+*/
+.app-shell.theme-light
+  .timer-clock-area
+  svg
+  circle[stroke="rgba(128,128,128,0.12)"],
+.app-shell.theme-light .pomo-ring svg circle:first-of-type {
+  stroke: rgba(0, 0, 0, 0.1);
+}
+
+/* ElapsedRing (TimerClock.jsx) and PomodoroClock ring track overrides */
+.app-shell.theme-light .timer-clock-area svg,
+.app-shell.theme-light .pomo-ring-wrap svg {
+  --ring-track-override: rgba(30, 25, 20, 0.1);
+}
+
+/*
+  The ring SVGs inline their colors directly, so we use a CSS filter trick
+  on the wrapper to ensure visibility. We override the track color via a
+  targeted selector on the first circle (track) within .pomo-ring-wrap and
+  .timer-clock-area.
+*/
+.app-shell.theme-light .pomo-ring-wrap .pomo-ring circle:first-of-type {
+  stroke: rgba(30, 25, 20, 0.1) !important;
+}
+
+/*
+  ElapsedRing in TimerClock.jsx renders inside .timer-clock-area in a div
+  with position:absolute. The track circle has no class, so we target by
+  position in the SVG.
+*/
+.app-shell.theme-light .timer-clock-area > div > svg circle:first-of-type {
+  stroke: rgba(30, 25, 20, 0.1) !important;
+}
+
+/* Digits on light background: use full-opacity dark text instead of faint */
+.app-shell.theme-light .timer-display {
+  color: rgba(26, 23, 20, 0.35);
+}
+.app-shell.theme-light .timer-display--running {
+  color: var(--tag-color, var(--accent));
+}
+.app-shell.theme-light .timer-clock__digits {
+  color: rgba(26, 23, 20, 0.75);
+}
+
+/*  Root layout  */
+
+.tracker-root {
+  display: grid;
+  grid-template-columns: 400px 1fr;
+  gap: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 40px 80px;
+  min-height: 100vh;
+  align-items: start;
+}
+
+.tracker-left {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  position: sticky;
+  top: 40px;
+}
+
+.tracker-right {
+  min-width: 0;
+}
+
+/*  Banners  */
+
+.auto-saved-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 12px;
+  background: rgba(52, 211, 153, 0.08);
+  border: 1px solid rgba(52, 211, 153, 0.2);
+  border-radius: 8px;
+  font-size: 12.5px;
+  color: #34d399;
+}
+.auto-saved-banner button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: inherit;
+  opacity: 0.7;
+  font-size: 15px;
+  line-height: 1;
+  padding: 0 2px;
+  border-radius: 3px;
+}
+.auto-saved-banner button:hover {
+  opacity: 1;
+}
+
+.tracker-error {
+  padding: 8px 12px;
+  background: rgba(248, 113, 113, 0.08);
+  border: 1px solid rgba(248, 113, 113, 0.2);
+  border-radius: 8px;
+  font-size: 12.5px;
+  color: #f87171;
+}
+
+/*  Timer card  */
+
+.timer-card {
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.timer-card__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.timer-card__label {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+.timer-card__pulse {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--color-success);
+  animation: pulse-green 1.8s ease-in-out infinite;
+  flex-shrink: 0;
+}
+
+@keyframes pulse-green {
+  0%,
+  100% {
+    opacity: 1;
+    box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.4);
+  }
+  50% {
+    opacity: 0.7;
+    box-shadow: 0 0 0 5px rgba(74, 222, 128, 0);
+  }
+}
+
+.timer-card__top-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.timer-card__today {
+  font-size: 11.5px;
+  color: var(--text-faint);
+  font-weight: 300;
+}
+
+/*  Pomodoro mode toggle  */
+
+.pomo-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: var(--bg-3);
+  border: 1px solid var(--border-2);
+  border-radius: 20px;
+  padding: 4px 10px 4px 7px;
+  cursor: pointer;
+  font-family: var(--font-sans);
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--text-faint);
+  transition:
+    border-color var(--transition-base),
+    background var(--transition-base),
+    color var(--transition-base),
+    opacity var(--transition-base);
+  white-space: nowrap;
+}
+.pomo-toggle:hover:not(:disabled) {
+  border-color: rgba(251, 146, 60, 0.5);
+  color: var(--text-muted);
+}
+.pomo-toggle--on {
+  background: var(--color-warning-dim);
+  border-color: var(--color-warning-border);
+  color: var(--color-warning);
+}
+.pomo-toggle:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.pomo-toggle__icon {
+  font-size: 13px;
+  line-height: 1;
+}
+.pomo-toggle__label {
+  font-size: 11px;
+  letter-spacing: 0.04em;
+}
+.pomo-toggle__pip {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--border-2);
+  margin-left: 2px;
+  transition: background var(--transition-base);
+  flex-shrink: 0;
+}
+.pomo-toggle__pip--on {
+  background: var(--color-warning);
+}
+
+/*  Clock area  */
+
+/* Stopwatch ring wrap — the ring SVG sets its own size via inline style */
+.timer-clock-wrap {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 0;
+}
+
+/* Pomodoro ring+digit grid — both children share cell [1,1], perfectly centred */
+.pomo-ring-wrap {
+  display: grid;
+  place-items: center;
+  width: 280px;
+  height: 280px;
+  flex-shrink: 0;
+}
+.pomo-ring-wrap > * {
+  grid-area: 1 / 1;
+}
+.pomo-ring-wrap .timer-display {
+  font-size: 64px;
+  letter-spacing: -2px;
+  padding: 0;
+  pointer-events: none;
+}
+.pomo-ring-wrap .timer-display--long {
+  font-size: 46px;
+  letter-spacing: -1px;
+}
+
+/* Large digit display */
+.timer-display {
+  font-family: var(--font-serif);
+  font-size: 68px;
+  font-weight: 700;
+  color: var(--text-faint);
+  letter-spacing: -3px;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+  transition: color 0.4s ease;
+  position: relative;
+  z-index: 1;
+}
+.timer-clock-wrap:not(.timer-clock-wrap--pomo) .timer-display {
+  padding: 16px 0 8px;
+}
+.timer-display--running {
+  color: var(--tag-color, var(--accent));
+  text-shadow: 0 0 60px
+    color-mix(in srgb, var(--tag-color, var(--accent)) 25%, transparent);
+}
+.timer-display--paused {
+  color: var(--text-faint);
+}
+.timer-display--long {
+  font-size: 46px;
+  letter-spacing: -1.5px;
+}
+
+/* Timer controls row */
+.timer-controls {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+}
+
+/* Timer buttons */
+.timer-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: none;
+  cursor: pointer;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+  padding: 11px 20px;
+  transition:
+    opacity var(--transition-base),
+    transform var(--transition-base),
+    background var(--transition-base);
+}
+.timer-btn:hover:not(:disabled) {
+  opacity: 0.88;
+  transform: translateY(-1px);
+}
+.timer-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+.timer-btn:disabled {
+  opacity: 0.38;
+  cursor: not-allowed;
+}
+
+.timer-btn--start {
+  background: var(--accent);
+  color: var(--color-on-accent);
+  flex: 1;
+}
+.timer-btn--pause {
+  background: rgba(251, 146, 60, 0.12);
+  color: var(--color-warning);
+  border: 1px solid rgba(251, 146, 60, 0.3);
+  flex: 1;
+}
+.timer-btn--stop {
+  background: var(--bg-3);
+  border: 1px solid var(--border-2);
+  color: var(--text-muted);
+}
+.timer-btn--discard {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--text-faint);
+  font-size: 13px;
+  padding: 9px 16px;
+}
+.timer-btn--discard:hover:not(:disabled) {
+  background: var(--color-error-dim);
+  border-color: var(--color-error-border);
+  color: var(--color-error);
+}
+
+/* Settings gear button */
+.timer-btn--settings {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--text-faint);
+  font-size: 14px;
+  padding: 9px 12px;
+  border-radius: var(--radius-sm);
+  transition: var(--transition-ui);
+}
+.timer-btn--settings:hover:not(:disabled) {
+  background: var(--surface-hover-light);
+  color: var(--text-muted);
+  transform: none;
+  opacity: 1;
+}
+.timer-btn--settings-on {
+  background: var(--accent-dim);
+  border-color: var(--accent-border);
+  color: var(--accent);
+}
+.timer-btn--settings-disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+/*  Pomodoro phase bar  */
+
+.pomo-phase-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--bg-3);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 8px 14px;
+  animation: phase-in 0.25s ease;
+  width: 100%;
+}
+
+@keyframes phase-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.pomo-phase-bar__left {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+.pomo-phase-bar__icon {
+  font-size: 14px;
+  line-height: 1;
+}
+.pomo-phase-bar__label {
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+.pomo-phase-bar__sessions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex: 1;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.pomo-phase-bar__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--border-2);
+  transition:
+    background 0.3s,
+    transform var(--transition-base);
+  flex-shrink: 0;
+}
+.pomo-phase-bar__dot--done {
+  background: rgba(74, 222, 128, 0.5);
+}
+.pomo-phase-bar__dot--active {
+  background: var(--accent);
+  transform: scale(1.35);
+}
+.pomo-phase-bar__count {
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-faint);
+  flex-shrink: 0;
+}
+
+/*  Pomodoro done state  */
+
+.pomo-done {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 32px 20px;
+  text-align: center;
+}
+.pomo-done__icon {
+  font-size: 40px;
+}
+.pomo-done__title {
+  font-family: var(--font-serif);
+  font-size: 22px;
+  font-weight: 400;
+  color: var(--text);
+}
+.pomo-done__sub {
+  font-size: 13px;
+  color: var(--text-muted);
+  max-width: 220px;
+  line-height: 1.55;
+}
+
+/*  Pomodoro inline settings  */
+
+.pomo-settings {
+  background: var(--bg-3);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+  animation: settings-in 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: opacity var(--transition-base);
+  width: 100%;
+}
+.pomo-settings--disabled {
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+@keyframes settings-in {
+  from {
+    opacity: 0;
+    transform: scaleY(0.92);
+    transform-origin: top;
+  }
+  to {
+    opacity: 1;
+    transform: scaleY(1);
+  }
+}
+
+.pomo-settings__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px 16px;
+}
+.pomo-settings__item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.pomo-settings__item--full {
+  grid-column: 1 / -1;
+}
+.pomo-settings__label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.pomo-settings__hint {
+  font-size: 10px;
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--text-faint);
+}
+
+/* Stepper */
+.pomo-stepper {
+  display: inline-flex;
+  align-items: center;
+  background: var(--bg-2);
+  border: 1px solid var(--border-2);
+  border-radius: 8px;
+  overflow: hidden;
+  width: fit-content;
+}
+.pomo-stepper__btn {
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: var(--font-sans);
+  font-size: 16px;
+  color: var(--text-muted);
+  transition:
+    background var(--transition-fast),
+    color var(--transition-fast);
+  flex-shrink: 0;
+}
+.pomo-stepper__btn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text);
+}
+.pomo-stepper__btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+.pomo-stepper__input-wrap {
+  display: flex;
+  align-items: center;
+  border-width: 0 1px;
+  border-style: solid;
+  border-color: var(--border);
+  height: 30px;
+  padding: 0 2px;
+}
+.pomo-stepper__input {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--text);
+  background: none;
+  border: none;
+  outline: none;
+  width: 42px;
+  text-align: center;
+  caret-color: var(--accent);
+  -moz-appearance: textfield;
+}
+.pomo-stepper__input::-webkit-outer-spin-button,
+.pomo-stepper__input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+}
+.pomo-stepper__suffix {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-faint);
+  margin-left: 1px;
+  line-height: 1;
+}
+
+/* Long-break pills */
+.pomo-settings__long-break-opts {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+}
+
+/* Shared pill base */
+.pomo-settings__opt,
+.pomo-settings__toggle {
+  border: 1px solid var(--border-2);
+  background: var(--bg-2);
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-faint);
+  cursor: pointer;
+  transition:
+    border-color var(--transition-base),
+    color var(--transition-base),
+    background var(--transition-base);
+}
+.pomo-settings__opt:hover,
+.pomo-settings__toggle:hover {
+  color: var(--text-muted);
+  border-color: var(--border-2);
+  background: var(--border);
+}
+
+.pomo-settings__opt {
+  padding: 4px 10px;
+  border-radius: 6px;
+}
+.pomo-settings__opt--active {
+  background: rgba(251, 146, 60, 0.12);
+  border-color: rgba(251, 146, 60, 0.45);
+  color: var(--color-warning);
+}
+
+.pomo-settings__toggles {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.pomo-settings__toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 8px;
+}
+.pomo-settings__toggle--on {
+  background: var(--color-success-dim);
+  border-color: var(--color-success-border);
+  color: var(--color-success);
+}
+.pomo-settings__toggle-pip {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--border-2);
+  flex-shrink: 0;
+  transition: background var(--transition-base);
+}
+.pomo-settings__toggle-pip--on {
+  background: var(--color-success);
+}
+
+/* Plan summary */
+.pomo-settings__summary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  margin-top: 12px;
+  padding: 10px 14px;
+  background: var(--bg-3);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+.pomo-settings__summary-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  flex: 1;
+}
+.pomo-settings__summary-item--total .pomo-settings__summary-value {
+  color: var(--accent);
+}
+.pomo-settings__summary-divider {
+  width: 1px;
+  height: 32px;
+  background: var(--border);
+  flex-shrink: 0;
+  margin: 0 4px;
+}
+.pomo-settings__summary-icon {
+  font-size: 13px;
+  line-height: 1;
+}
+.pomo-settings__summary-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+.pomo-settings__summary-value {
+  font-size: 13px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-muted);
+  line-height: 1;
+}
+
+/*  TimerClock component (stopwatch mode)  */
+
+.timer-clock {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--ct-gap, 18px);
+  padding: var(--ct-padding, 0);
+  border-radius: var(--ct-border-radius, 0);
+  background: var(--ct-bg, transparent);
+  box-shadow: var(--ct-shadow, none);
+}
+
+.timer-clock__ring-wrap {
+  position: relative;
+  width: 260px;
+  height: 260px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.timer-clock__time-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  pointer-events: none;
+}
+
+.timer-clock__digits {
+  font-family: var(--ct-digit-font, var(--font-serif));
+  font-size: var(--ct-digit-size, 52px);
+  font-weight: var(--ct-digit-weight, 200);
+  letter-spacing: var(--ct-digit-spacing, -0.03em);
+  color: var(--ct-text, var(--text));
+  line-height: 1;
+}
+
+.timer-clock__status-label {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ct-text-dim, var(--text-faint));
+}
+.timer-clock__status-label--live {
+  color: #4ade80;
+}
+
+.timer-clock__controls {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+}
+
+/* tc-btn: unified button system for TimerClock component */
+.tc-btn {
+  font-family: var(--font-sans);
+  font-size: 13.5px;
+  font-weight: 500;
+  border: none;
+  border-radius: var(--ct-btn-radius, 10px);
+  cursor: pointer;
+  padding: 10px 22px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition:
+    opacity var(--transition-base),
+    transform var(--transition-base),
+    background var(--transition-base);
+  white-space: nowrap;
+}
+.tc-btn:hover:not(:disabled) {
+  opacity: 0.85;
+  transform: translateY(-1px);
+}
+.tc-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+.tc-btn:disabled {
+  opacity: 0.38;
+  cursor: not-allowed;
+}
+
+.tc-btn--primary {
+  background: var(--ct-btn-start-bg, var(--accent));
+  color: var(--ct-btn-start-text, var(--color-on-accent, #06060a));
+  padding: 11px 32px;
+  font-size: 14px;
+  font-weight: 600;
+}
+.tc-btn--pause {
+  background: var(--ct-btn-pause-bg, rgba(251, 146, 60, 0.12));
+  color: var(--ct-btn-pause-text, #fb923c);
+  border: 1px solid rgba(251, 146, 60, 0.22);
+  padding: 11px 32px;
+  font-size: 14px;
+  font-weight: 600;
+}
+.tc-btn--save {
+  background: var(--ct-btn-stop-bg, rgba(74, 222, 128, 0.09));
+  color: var(--ct-btn-stop-text, #4ade80);
+  border: 1px solid rgba(74, 222, 128, 0.2);
+}
+.tc-btn--ghost {
+  background: var(--ct-btn-discard-bg, var(--surface-hover-light));
+  color: var(--ct-btn-discard-text, var(--text-muted));
+  border: 1px solid var(--border-2);
+  font-size: 12.5px;
+  padding: 8px 18px;
+}
+
+/*  Session name input  */
+
+.timer-session-name {
+  width: 100%;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: 15px;
+  font-weight: 500;
+  padding: 8px 0;
+  outline: none;
+  transition: border-color var(--transition-base);
+  caret-color: var(--accent);
+}
+.timer-session-name::placeholder {
+  color: var(--text-faint);
+  font-weight: 300;
+}
+.timer-session-name:focus {
+  border-bottom-color: var(--accent);
+}
+.timer-session-name:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/*  Tag row + note  */
+
+.timer-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.timer-note {
+  width: 100%;
+  background: var(--bg-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: 13.5px;
+  font-weight: 300;
+  padding: 10px 14px;
+  outline: none;
+  resize: none;
+  line-height: 1.6;
+  transition: border-color var(--transition-base);
+  caret-color: var(--accent);
+}
+.timer-note::placeholder {
+  color: var(--text-faint);
+}
+.timer-note:focus {
+  border-color: var(--border-2);
+}
+
+/*  Skin picker  */
+
+.skin-picker {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+.skin-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 11px;
+  border-radius: 7px;
+  border: 1px solid var(--border);
+  background: none;
+  color: var(--text-muted);
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition-ui);
+}
+.skin-btn:hover {
+  background: var(--surface-hover-light);
+  color: var(--text);
+}
+.skin-btn--active {
+  background: var(--accent-dim);
+  border-color: var(--accent-border);
+  color: var(--accent);
+}
+
+/*  Tag picker  */
+
+.tag-picker {
+  position: relative;
+  flex: 1;
+}
+
+.tag-picker__trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--bg-3);
+  border: 1px solid var(--border-2);
+  border-radius: var(--radius-sm);
+  padding: 9px 12px;
+  cursor: pointer;
+  font-family: var(--font-sans);
+  font-size: 13.5px;
+  color: var(--text-muted);
+  transition:
+    border-color var(--transition-base),
+    background var(--transition-base);
+  text-align: left;
+}
+.tag-picker__trigger:hover:not(:disabled) {
+  border-color: var(--accent-border);
+  background: var(--accent-dim);
+}
+.tag-picker__trigger:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.tag-picker__split {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--border-2);
+  border-radius: var(--radius-sm);
+  background: var(--bg-3);
+  overflow: hidden;
+  width: 100%;
+}
+.tag-picker__split-main,
+.tag-picker__split-sub {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 10px;
+  background: none;
+  border: none;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: var(--transition-ui);
+  white-space: nowrap;
+}
+.tag-picker__split-main:hover:not(:disabled),
+.tag-picker__split-sub:hover:not(:disabled) {
+  color: var(--text);
+  background: var(--surface-hover-light);
+}
+.tag-picker__split-divider {
+  width: 1px;
+  height: 20px;
+  background: var(--border-2);
+  flex-shrink: 0;
+}
+.tag-picker__split-clear {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  margin-right: 4px;
+  background: none;
+  border: none;
+  color: var(--text-faint);
+  cursor: pointer;
+  font-size: 15px;
+  border-radius: 50%;
+  transition: var(--transition-ui);
+}
+.tag-picker__split-clear:hover {
+  color: var(--text);
+  background: var(--surface-hover-light);
+}
+
+.tag-picker__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+.tag-picker__dot--sm {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+}
+.tag-picker__icon {
+  color: var(--text-faint);
+  display: flex;
+}
+.tag-picker__name {
+  flex: 1;
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.tag-picker__name--placeholder {
+  color: var(--text-faint);
+}
+.tag-picker__name--sub {
+  color: var(--text-faint);
+  font-size: 12px;
+}
+.tag-picker__no-sub-hint {
+  font-size: 10.5px;
+  color: var(--text-faint);
+  font-weight: 400;
+}
+.tag-picker__chevron {
+  color: var(--text-faint);
+  margin-left: auto;
+  flex-shrink: 0;
+}
+.tag-picker__check {
+  margin-left: auto;
+  color: var(--accent);
+}
+.tag-picker__subtag-count {
+  font-size: 10px;
+  background: var(--accent-dim);
+  color: var(--accent);
+  border-radius: 10px;
+  padding: 1px 5px;
+  margin-left: auto;
+}
+.tag-picker__inline-clear {
+  background: none;
+  border: none;
+  color: var(--text-faint);
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1;
+  padding: 0 2px;
+  border-radius: 3px;
+  transition: color var(--transition-base);
+}
+.tag-picker__inline-clear:hover {
+  color: var(--text);
+}
+
+.tag-picker__dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  background: var(--bg-2);
+  border: 1px solid var(--border-2);
+  border-radius: var(--radius);
+  z-index: 200;
+  overflow: hidden;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+  animation: dropdown-in 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.tag-picker__dropdown--sub {
+  min-width: 190px;
+}
+
+.tag-picker__search-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-faint);
+}
+.tag-picker__search-icon {
+  color: var(--text-faint);
+  flex-shrink: 0;
+}
+.tag-picker__search {
+  flex: 1;
+  background: none;
+  border: none;
+  outline: none;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  color: var(--text);
+  caret-color: var(--accent);
+}
+.tag-picker__search::placeholder {
+  color: var(--text-faint);
+}
+
+.tag-picker__list {
+  max-height: 200px;
+  overflow-y: auto;
+  padding: 4px;
+}
+
+.tag-picker__section-header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px 4px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-family: var(--font-sans);
+  text-align: left;
+  margin-top: 4px;
+}
+.tag-picker__section-header:first-child {
+  margin-top: 0;
+}
+.tag-picker__section-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  flex: 1;
+  transition: color var(--transition-fast);
+}
+.tag-picker__section-header:hover .tag-picker__section-label {
+  color: var(--text-muted);
+}
+.tag-picker__section-count {
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-faint);
+  background: var(--surface-subtle);
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  padding: 1px 6px;
+  line-height: 1.6;
+}
+.tag-picker__section-chevron {
+  color: var(--text-faint);
+  transition: transform var(--transition-base);
+  flex-shrink: 0;
+}
+.tag-picker__section-chevron--collapsed {
+  transform: rotate(-90deg);
+}
+.tag-picker__section-items {
+  padding-bottom: 4px;
+}
+
+.tag-picker__item-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  padding-right: 4px;
+}
+.tag-picker__item-wrap .tag-picker__item {
+  flex: 1;
+}
+
+.tag-picker__item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-family: var(--font-sans);
+  font-size: 13.5px;
+  color: var(--text-muted);
+  text-align: left;
+  transition:
+    background var(--transition-fast),
+    color var(--transition-fast);
+}
+.tag-picker__item:hover {
+  background: var(--border);
+  color: var(--text);
+}
+.tag-picker__item--active {
+  color: var(--text);
+}
+
+.tag-picker__hide-btn {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 5px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: var(--text-faint);
+  opacity: 0;
+  transition:
+    opacity var(--transition-fast),
+    color var(--transition-fast),
+    background var(--transition-fast);
+}
+.tag-picker__item-actions {
+  display: flex;
+  align-items: center;
+  gap: 1px;
+  flex-shrink: 0;
+  opacity: 0;
+  transition: opacity var(--transition-fast);
+  padding-right: 2px;
+}
+.tag-picker__item-wrap:hover .tag-picker__item-actions {
+  opacity: 1;
+}
+
+/* Base for all three action buttons */
+.tag-picker__action-btn {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 5px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: var(--text-faint);
+  transition:
+    color var(--transition-fast),
+    background var(--transition-fast);
+}
+
+/* Edit — accent on hover */
+.tag-picker__action-btn--edit:hover {
+  color: var(--accent);
+  background: var(--accent-dim);
+}
+
+/* Hide — warning on hover */
+.tag-picker__action-btn--hide:hover {
+  color: var(--color-warning);
+  background: var(--color-warning-dim);
+}
+
+/* Delete — error on hover */
+.tag-picker__action-btn--delete:hover {
+  color: var(--color-error);
+  background: var(--color-error-dim);
+}
+
+.tag-picker__item-wrap:hover .tag-picker__hide-btn {
+  opacity: 1;
+}
+.tag-picker__hide-btn:hover {
+  color: var(--color-error);
+  background: var(--color-error-dim);
+}
+
+.tag-picker__create {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border: none;
+  border-top: 1px solid var(--border);
+  background: none;
+  cursor: pointer;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  color: var(--accent);
+  transition: background var(--transition-fast);
+}
+.tag-picker__create:hover {
+  background: var(--accent-dim);
+}
+
+.tag-picker__empty {
+  padding: 16px 12px;
+  font-size: 13px;
+  color: var(--text-faint);
+  text-align: center;
+}
+.tag-picker__add-sub {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px;
+  flex-wrap: wrap;
+  border-top: 1px solid var(--border);
+}
+
+/*  Tab-blocked overlay  */
+
+.tab-blocked {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 40px 20px;
+  text-align: center;
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+}
+.tab-blocked__icon {
+  font-size: 28px;
+}
+.tab-blocked__title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+}
+.tab-blocked__body {
+  font-size: 13px;
+  color: var(--text-muted);
+  max-width: 320px;
+  line-height: 1.6;
+}
+
+/*  Sessions card  */
+
+.sessions-card {
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+}
+
+.sessions-card__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.sessions-card__title {
+  font-family: var(--font-serif);
+  font-size: 22px;
+  font-weight: 400;
+  color: var(--text);
+  letter-spacing: -0.3px;
+}
+
+.sessions-card__sub {
+  font-size: 12px;
+  color: var(--text-faint);
+  margin-top: 3px;
+}
+
+.sessions-card__actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.sessions-card__total {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent);
+  background: var(--accent-dim);
+  border: 1px solid var(--accent-border);
+  border-radius: 20px;
+  padding: 4px 12px;
+  white-space: nowrap;
+}
+
+.sessions-clear-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 12px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: none;
+  font-family: var(--font-sans);
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--text-faint);
+  cursor: pointer;
+  transition: var(--transition-ui);
+  white-space: nowrap;
+}
+.sessions-clear-btn:hover {
+  background: rgba(248, 113, 113, 0.07);
+  border-color: rgba(248, 113, 113, 0.2);
+  color: #f87171;
+}
+
+/*  Session empty state  */
+
+.sessions-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 60px 20px;
+  text-align: center;
+}
+.sessions-empty__icon {
+  color: var(--text-faint);
+  opacity: 0.4;
+}
+.sessions-empty__text {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+.sessions-empty__sub {
+  font-size: 13px;
+  color: var(--text-faint);
+  max-width: 240px;
+  line-height: 1.6;
+}
+
+/*  Session list  */
+
+.sessions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.session-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 10px;
+  border-radius: 9px;
+  transition: background var(--transition-base);
+  border: 1px solid transparent;
+}
+.session-row:hover {
+  background: var(--surface-hover-light);
+  border-color: var(--border);
+}
+.session-row--latest {
+  background: var(--surface-subtle);
+  border-color: var(--border);
+}
+
+.session-row__left {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
+}
+.session-row__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 5px;
+}
+.session-row__info {
+  flex: 1;
+  min-width: 0;
+}
+.session-row__name {
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.session-row__pomo-badge {
+  font-size: 12px;
+}
+.session-row__meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: 3px;
+}
+.session-row__tag {
+  font-size: 11px;
+  font-weight: 500;
+  border: 1px solid;
+  border-radius: 10px;
+  padding: 1px 7px;
+  white-space: nowrap;
+}
+.session-row__time {
+  font-size: 11px;
+  color: var(--text-faint);
+}
+.session-row__note {
+  font-size: 11.5px;
+  color: var(--text-faint);
+  margin-top: 4px;
+  line-height: 1.5;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.session-row__duration {
+  font-family: "Geist", monospace;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--text-muted);
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+/*  Create tag modal  */
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(4px);
+  z-index: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: overlay-in 0.18s ease;
+}
+.modal {
+  background: var(--bg-2);
+  border: 1px solid var(--border-2);
+  border-radius: var(--radius-lg);
+  padding: 28px 28px 24px;
+  width: min(420px, 92vw);
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.4);
+  animation: rise 0.22s ease;
+}
+.modal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+.modal__title {
+  font-family: var(--font-serif);
+  font-size: 20px;
+  font-weight: 400;
+  color: var(--text);
+}
+.modal__close {
+  background: none;
+  border: none;
+  color: var(--text-faint);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 5px;
+  display: flex;
+  transition: color var(--transition-base);
+}
+.modal__close:hover {
+  color: var(--text);
+}
+.modal__form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.modal__field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.modal__label {
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+.modal__input {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  color: var(--text);
+  background: var(--bg-3);
+  border: 1px solid var(--border-2);
+  border-radius: 9px;
+  padding: 10px 14px;
+  outline: none;
+  transition: border-color var(--transition-base);
+}
+.modal__input:focus {
+  border-color: var(--accent-border);
+}
+.modal__colors {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+.modal__color-btn {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition:
+    transform var(--transition-fast),
+    border-color var(--transition-fast);
+}
+.modal__color-btn:hover {
+  transform: scale(1.2);
+}
+.modal__color-btn--active {
+  border-color: white;
+  transform: scale(1.15);
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.3);
+}
+.modal__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 4px;
+}
+.modal__error {
+  font-size: 12.5px;
+  color: var(--color-error);
+  background: var(--color-error-dim);
+  border: 1px solid var(--color-error-border);
+  border-radius: 6px;
+  padding: 8px 12px;
+}
+
+/*  Responsive  */
+
+@media (max-width: 1100px) {
+  .tracker-root {
+    grid-template-columns: 1fr;
+    padding: 24px 20px 60px;
+    gap: 16px;
+  }
+  .tracker-left {
+    position: static;
+  }
+}
+
+@media (max-width: 600px) {
+  .tracker-root {
+    padding: 16px 12px 40px;
+  }
+  .timer-card,
+  .sessions-card {
+    padding: 16px;
+  }
+  .timer-display {
+    font-size: 48px;
+  }
+  .pomo-ring-wrap {
+    width: 230px;
+    height: 230px;
+  }
+  .pomo-ring-wrap .timer-display {
+    font-size: 52px;
+  }
+  .sessions-card__title {
+    font-size: 18px;
+  }
+  .pomo-settings__grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/*  TimerClock area (rebuilt stopwatch component)  */
+
+/* Wraps the ring + time + controls into a centered column */
+.timer-clock-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  width: 100%;
+}
+
+/* The wrap div inside timer-clock-wrap gets flex-centering from parent */
+.timer-clock-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px 0;
+}
+
+/* Status label row (below the ring) */
+.timer-status-row {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.timer-status-label {
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+.timer-status-label--live {
+  color: var(--color-success);
+}
+
+/* pomo-wrap: wrapper for PomodoroClock */
+.pomo-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 16px;
+  width: 100%;
+}
+
+/* Centre the ring grid inside the card */
+.pomo-wrap .pomo-ring-wrap {
+  align-self: center;
+}

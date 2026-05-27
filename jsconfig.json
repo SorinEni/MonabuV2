@@ -1,0 +1,28 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "ignoreDeprecations": "6.0",
+    "paths": {
+      "@*": ["./src/*"],
+      "@api/*": ["./src/api/*"],
+      "@components/*": ["./src/components/*"],
+      "@shared/*": ["./src/components/shared/*"],
+      "@pages/*": ["./src/pages/*"],
+      "@private/*": ["./src/pages/private/*"],
+      "@public/*": ["./src/pages/public/*"],
+      "@auth/*": ["./src/pages/auth/*"],
+      "@styles/*": ["./src/styles/*"],
+      "@utils/*": ["./src/utils/*"],
+      "@constants/*": ["./constants/*"],
+      "@hooks/*": ["./src/hooks/*"],
+      "#/*": ["backend/*"],
+      "#controllers/*": ["backend/controllers/*"],
+      "#models/*": ["backend/models/*"],
+      "#routes/*": ["backend/routes/*"],
+      "#middleware/*": ["backend/middleware/*"],
+      "#utils/*": ["backend/utils/*"],
+      "#constants/*": ["backend/constants/*"]
+    }
+  },
+  "exclude": ["node_modules", "frontend/dist"]
+}
