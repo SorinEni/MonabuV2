@@ -13,7 +13,7 @@
   height: 100vh;
   position: sticky;
   top: 0;
-  z-index: 100;
+  z-index: 5;
   transition: width var(--transition-slow) cubic-bezier(0.16, 1, 0.3, 1);
   overflow: hidden;
 }
@@ -397,7 +397,7 @@
 }
 
 /* ─── Mobile — force collapsed, hide theme toggler ───────────── */
-@media (max-width: 51.25rem) {
+@media (max-width: 52rem) {
   .sidebar {
     width: 3.75rem;
   }

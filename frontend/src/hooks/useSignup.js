@@ -19,6 +19,10 @@ export function useSignup() {
   const [name, setName] = useState("");
   const [username, setUsername] = useState("");
   const [usernameError, setUsernameError] = useState("");
+  const [usernameCheck, setUsernameCheck] = useState({
+    status: "idle",
+    msg: "",
+  });
 
   // Step 2 — Goals
   const [goal, setGoal] = useState("");
@@ -38,18 +42,52 @@ export function useSignup() {
         await api.post("/auth/validate-email", { email });
         setEmailCheck({ status: "valid", msg: "Email available" });
       } catch (err) {
-        setEmailCheck({ status: "invalid", msg: err.message || "Invalid email" });
+        setEmailCheck({
+          status: "invalid",
+          msg: err.message || "Invalid email",
+        });
       }
     }, 500);
     return () => clearTimeout(timer);
   }, [email]);
 
+  // Silent debounced username availability check
+  useEffect(() => {
+    const trimmed = username.trim();
+    if (!trimmed) {
+      setUsernameCheck({ status: "idle", msg: "" });
+      return;
+    }
+    setUsernameCheck({ status: "checking", msg: "Checking username…" });
+    const timer = setTimeout(async () => {
+      try {
+        await api.post("/auth/validate-username", { username: trimmed });
+        setUsernameCheck({ status: "valid", msg: "Username available" });
+      } catch (err) {
+        setUsernameCheck({
+          status: "invalid",
+          msg: err.message || "Username already taken",
+        });
+      }
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [username]);
+
   async function handleAccountNext(e) {
     e.preventDefault();
     setAccountError("");
-    if (!email || !password) { setAccountError("Email and password are required."); return; }
-    if (password.length < 8) { setAccountError("Password must be at least 8 characters."); return; }
-    if (emailCheck.status === "valid") { setStep(1); return; }
+    if (!email || !password) {
+      setAccountError("Email and password are required.");
+      return;
+    }
+    if (password.length < 8) {
+      setAccountError("Password must be at least 8 characters.");
+      return;
+    }
+    if (emailCheck.status === "valid") {
+      setStep(1);
+      return;
+    }
     setAccountLoading(true);
     try {
       await api.post("/auth/validate-email", { email });
@@ -64,7 +102,30 @@ export function useSignup() {
   async function handleProfileNext(e) {
     e.preventDefault();
     setUsernameError("");
-    if (!username.trim()) { setUsernameError("Username is required."); return; }
+    if (!username.trim()) {
+      setUsernameError("Username is required.");
+      return;
+    }
+    if (usernameCheck.status === "invalid") {
+      setUsernameError(usernameCheck.msg);
+      return;
+    }
+    if (usernameCheck.status === "checking") {
+      setUsernameError("Please wait while we check your username.");
+      return;
+    }
+    if (usernameCheck.status === "idle") {
+      try {
+        await api.post("/auth/validate-username", {
+          username: username.trim(),
+        });
+      } catch (err) {
+        const msg = err.message || "Username already taken";
+        setUsernameError(msg);
+        setUsernameCheck({ status: "invalid", msg });
+        return;
+      }
+    }
     setStep(2);
   }
 
@@ -111,6 +172,7 @@ export function useSignup() {
     setUsername,
     usernameError,
     setUsernameError,
+    usernameCheck,
     handleProfileNext,
     // Goals
     goal,

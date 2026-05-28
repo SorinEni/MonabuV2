@@ -1,8 +1,23 @@
 import { AuthLeftPanel, AuthRightPanel } from "@components/auth/AuthPanel";
 import StepDots from "@components/auth/StepDots";
 import ConfirmEmail from "@components/auth/ConfirmEmail";
-import { GoogleIcon, EyeOpenIcon, EyeClosedIcon } from "@components/shared/Icons";
-import { GOALS } from "@constants/goals";
+import PasswordStrengthMeter from "@components/shared/PasswordStrengthMeter";
+import {
+  GoogleIcon,
+  EyeOpenIcon,
+  EyeClosedIcon,
+} from "@components/shared/Icons";
+const GOALS = [
+  { value: "none", icon: "🤐", label: "None" },
+  { value: "work", icon: "💼", label: "Work" },
+  { value: "school", icon: "🎒", label: "School" },
+  { value: "fitness", icon: "🏋️", label: "Fitness" },
+  { value: "learning", icon: "🧠", label: "Learning" },
+  { value: "reading", icon: "📚", label: "Reading" },
+  { value: "productivity", icon: "⚡", label: "Productivity" },
+  { value: "habits", icon: "🔁", label: "Habits" },
+];
+
 import { useSignup } from "@hooks/useSignup";
 import "@styles/Auth.css";
 
@@ -16,6 +31,7 @@ const QUOTE = {
 export default function SignupPage() {
   const {
     step,
+    setStep,
     confirmedEmail,
     email,
     setEmail,
@@ -33,6 +49,7 @@ export default function SignupPage() {
     setUsername,
     usernameError,
     setUsernameError,
+    usernameCheck,
     handleProfileNext,
     goal,
     setGoal,
@@ -59,24 +76,36 @@ export default function SignupPage() {
           <>
             <div className="auth-form-header">
               <h1 className="auth-heading">Create your account</h1>
-              <p className="auth-subheading">Free forever. No credit card required.</p>
+              <p className="auth-subheading">
+                Free forever. No credit card required.
+              </p>
             </div>
 
             <button
               className="auth-oauth-btn"
               type="button"
-              onClick={() => { window.location.href = "/api/auth/google"; }}>
+              onClick={() => {
+                window.location.href = "/api/auth/google";
+              }}>
               <GoogleIcon />
               Continue with Google
             </button>
 
-            <div className="auth-divider"><span>or continue with email</span></div>
+            <div className="auth-divider">
+              <span>or continue with email</span>
+            </div>
 
-            {accountError && <div className="auth-error" role="alert">{accountError}</div>}
+            {accountError && (
+              <div className="auth-error" role="alert">
+                {accountError}
+              </div>
+            )}
 
             <form className="auth-form" onSubmit={handleAccountNext} noValidate>
               <div className="auth-field">
-                <label className="auth-label" htmlFor="su-email">Email</label>
+                <label className="auth-label" htmlFor="su-email">
+                  Email
+                </label>
                 <input
                   id="su-email"
                   className={`auth-input${emailCheck.status === "invalid" ? " auth-input--error" : ""}`}
@@ -88,22 +117,35 @@ export default function SignupPage() {
                   required
                 />
                 {emailCheck.msg && (
-                  <div style={{
-                    marginTop: 4,
-                    fontSize: 12,
-                    color: emailCheck.status === "invalid" ? "var(--color-error)" : emailCheck.status === "valid" ? "var(--color-success)" : "var(--text-faint)",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 4,
-                  }}>
-                    {emailCheck.status === "checking" && <span className="auth-spinner" style={{ width: 10, height: 10, borderWidth: 1.5 }} />}
+                  <div
+                    style={{
+                      marginTop: 4,
+                      fontSize: 12,
+                      color:
+                        emailCheck.status === "invalid"
+                          ? "var(--color-error)"
+                          : emailCheck.status === "valid"
+                            ? "var(--color-success)"
+                            : "var(--text-faint)",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 4,
+                    }}>
+                    {emailCheck.status === "checking" && (
+                      <span
+                        className="auth-spinner"
+                        style={{ width: 10, height: 10, borderWidth: 1.5 }}
+                      />
+                    )}
                     {emailCheck.msg}
                   </div>
                 )}
               </div>
 
               <div className="auth-field">
-                <label className="auth-label" htmlFor="su-password">Password</label>
+                <label className="auth-label" htmlFor="su-password">
+                  Password
+                </label>
                 <div className="auth-input-wrap">
                   <input
                     id="su-password"
@@ -123,19 +165,28 @@ export default function SignupPage() {
                     {showPass ? <EyeClosedIcon /> : <EyeOpenIcon />}
                   </button>
                 </div>
+                <PasswordStrengthMeter password={password} />
               </div>
 
               <button
                 type="submit"
                 className={`auth-submit-btn${accountLoading ? " auth-submit-btn--loading" : ""}`}
                 disabled={accountLoading}>
-                {accountLoading ? <><span className="auth-spinner" /> Checking…</> : "Continue"}
+                {accountLoading ? (
+                  <>
+                    <span className="auth-spinner" /> Checking…
+                  </>
+                ) : (
+                  "Continue"
+                )}
               </button>
             </form>
 
             <p className="auth-switch">
               Already have an account?{" "}
-              <a href="/login" className="auth-switch__link">Sign in</a>
+              <a href="/login" className="auth-switch__link">
+                Sign in
+              </a>
             </p>
           </>
         )}
@@ -150,7 +201,9 @@ export default function SignupPage() {
 
             <form className="auth-form" onSubmit={handleProfileNext} noValidate>
               <div className="auth-field">
-                <label className="auth-label" htmlFor="su-name">Full name (optional)</label>
+                <label className="auth-label" htmlFor="su-name">
+                  Display name
+                </label>
                 <input
                   id="su-name"
                   className="auth-input"
@@ -163,24 +216,59 @@ export default function SignupPage() {
               </div>
 
               <div className="auth-field">
-                <label className="auth-label" htmlFor="su-username">Username</label>
+                <label className="auth-label" htmlFor="su-username">
+                  Username (unique)
+                </label>
                 <input
                   id="su-username"
-                  className={`auth-input${usernameError ? " auth-input--error" : ""}`}
+                  className={`auth-input${usernameError || usernameCheck.status === "invalid" ? " auth-input--error" : ""}`}
                   type="text"
                   placeholder="janedoe"
                   value={username}
-                  onChange={(e) => { setUsername(e.target.value); setUsernameError(""); }}
+                  onChange={(e) => {
+                    setUsername(e.target.value);
+                    setUsernameError("");
+                  }}
                   autoComplete="username"
                   required
                 />
-                {usernameError && <p className="auth-field-error">{usernameError}</p>}
+                {usernameCheck.msg && !usernameError && (
+                  <div
+                    style={{
+                      marginTop: 4,
+                      fontSize: 12,
+                      color:
+                        usernameCheck.status === "invalid"
+                          ? "var(--color-error)"
+                          : usernameCheck.status === "valid"
+                            ? "var(--color-success)"
+                            : "var(--text-faint)",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 4,
+                    }}>
+                    {usernameCheck.status === "checking" && (
+                      <span
+                        className="auth-spinner"
+                        style={{ width: 10, height: 10, borderWidth: 1.5 }}
+                      />
+                    )}
+                    {usernameCheck.msg}
+                  </div>
+                )}
+                {usernameError && (
+                  <p className="auth-field-error">{usernameError}</p>
+                )}
               </div>
 
-              <button type="submit" className="auth-submit-btn">Continue</button>
+              <button type="submit" className="auth-submit-btn">
+                Continue
+              </button>
             </form>
 
-            <button className="auth-switch__link" onClick={() => setStep(0)}>← Back</button>
+            <button className="auth-back-btn" onClick={() => setStep(0)}>
+              ← Back
+            </button>
           </>
         )}
 
@@ -189,51 +277,99 @@ export default function SignupPage() {
           <>
             <div className="auth-form-header">
               <h1 className="auth-heading">Set your goals</h1>
-              <p className="auth-subheading">We'll use these to personalise your dashboard.</p>
+              <p className="auth-subheading">
+                We'll use these to personalise your dashboard.
+              </p>
             </div>
 
-            {submitError && <div className="auth-error" role="alert">{submitError}</div>}
+            {submitError && (
+              <div className="auth-error" role="alert">
+                {submitError}
+              </div>
+            )}
 
             <form className="auth-form" onSubmit={handleSubmit} noValidate>
               <div className="auth-field">
-                <label className="auth-label" htmlFor="su-goal">Primary goal</label>
-                <select
-                  id="su-goal"
-                  className="auth-input"
-                  value={goal}
-                  onChange={(e) => setGoal(e.target.value)}>
-                  <option value="">Select a goal…</option>
+                <label className="auth-label">Primary goal</label>
+                <div className="auth-goal-grid">
                   {GOALS.map((g) => (
-                    <option key={g.value} value={g.value}>{g.label}</option>
+                    <button
+                      key={g.value || "none"}
+                      type="button"
+                      className={`auth-goal-card${g.value === "" ? " auth-goal-card--none" : ""}${goal === g.value ? " auth-goal-card--selected" : ""}`}
+                      onClick={() => setGoal(g.value)}>
+                      <span className="auth-goal-icon">{g.icon}</span>
+                      <span className="auth-goal-text">
+                        <span className="auth-goal-label">{g.label}</span>
+                      </span>
+                    </button>
                   ))}
-                </select>
+                </div>
               </div>
 
               <div className="auth-field">
-                <label className="auth-label" htmlFor="su-hours">Weekly study target (hours)</label>
-                <input
-                  id="su-hours"
-                  className="auth-input"
-                  type="number"
-                  min="1"
-                  max="168"
-                  placeholder="e.g. 10"
-                  value={weeklyHours}
-                  onChange={(e) => setWeeklyHours(e.target.value)}
-                />
+                <label className="auth-label" htmlFor="su-hours">
+                  Weekly study target (hours)
+                  <span className="auth-label-hint">(max 80)</span>
+                </label>
+                <div className="auth-hours-control">
+                  <button
+                    type="button"
+                    className="auth-hours-btn"
+                    onClick={() =>
+                      setWeeklyHours((v) => Math.max(1, Number(v) - 1))
+                    }>
+                    −
+                  </button>
+                  <input
+                    id="su-hours"
+                    className="auth-input"
+                    type="number"
+                    min="1"
+                    max="80"
+                    placeholder="10"
+                    value={weeklyHours}
+                    onChange={(e) =>
+                      setWeeklyHours(
+                        Math.min(80, Math.max(1, Number(e.target.value))),
+                      )
+                    }
+                    style={{
+                      textAlign: "center",
+                      width: "52px",
+                      border: "none",
+                      background: "transparent",
+                      padding: "0",
+                    }}
+                  />
+                  <button
+                    type="button"
+                    className="auth-hours-btn"
+                    onClick={() =>
+                      setWeeklyHours((v) => Math.min(80, Number(v) + 1))
+                    }>
+                    +
+                  </button>
+                </div>
               </div>
 
               <button
                 type="submit"
                 className={`auth-submit-btn${submitLoading ? " auth-submit-btn--loading" : ""}`}
                 disabled={submitLoading}>
-                {submitLoading
-                  ? <><span className="auth-spinner" /> Creating account…</>
-                  : "Create account"}
+                {submitLoading ? (
+                  <>
+                    <span className="auth-spinner" /> Creating account…
+                  </>
+                ) : (
+                  "Create account"
+                )}
               </button>
             </form>
 
-            <button className="auth-switch__link" onClick={() => setStep(1)}>← Back</button>
+            <button className="auth-back-btn" onClick={() => setStep(1)}>
+              ← Back
+            </button>
           </>
         )}
       </AuthRightPanel>

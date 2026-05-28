@@ -129,7 +129,7 @@
 
 .auth-form-wrap {
   width: 100%;
-  max-width: 400px;
+  max-width: 25.5rem;
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -533,73 +533,136 @@
 }
 
 /* Back + submit row */
-.auth-form-actions {
-  display: flex;
-  gap: 10px;
-  align-items: stretch; /* children grow to the same height */
-  margin-top: 4px;
-}
 .auth-back-btn {
-  background: var(--surface-subtle);
-  align-self: flex-start;
-  border: 1px solid var(--border-2);
-  color: var(--text-muted);
+  display: inline-flex;
+  align-items: center;
+  gap: 0px;
+  width: fit-content; /* prevents full-row stretch */
+  margin-left: auto; /* pushes button to the right */
+  background: transparent;
+  border: none;
+  color: var(--text-faint);
   font-family: var(--font-sans);
-  font-size: 15px;
+  font-size: 13px;
   font-weight: 500;
-  padding: 12px 18px; /* match auth-submit-btn vertical padding */
-  border-radius: var(--radius-sm);
+  padding: 8px 18px;
   cursor: pointer;
-  white-space: nowrap;
-  transition: background var(--transition-base);
 }
 .auth-back-btn:hover {
-  background: var(--surface-hover-mid);
-  transform: translateY(-1px);
+  color: var(--text);
+  opacity: 0.9;
+  transform: translateX(-2px);
+}
+.auth-back-btn:focus-visible {
+  outline: none;
+  color: var(--text);
 }
 
-/* Goal grid */
+/* Goal grid — 4×2 card layout */
 .auth-goal-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(4, 1fr);
   gap: 8px;
 }
+
+/* Base goal card */
 .auth-goal-card {
   display: flex;
-  align-items: center;
-  gap: 10px;
+  max-width: 6rem;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
   background: var(--bg-2);
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
-  padding: 12px 14px;
+  padding: 12px 12px 12px;
   cursor: pointer;
   font-family: var(--font-sans);
-  font-size: 13px;
-  color: var(--text-muted);
   text-align: left;
   transition:
     background var(--transition-base),
     border-color var(--transition-base),
-    color var(--transition-base);
+    color var(--transition-base),
+    transform var(--transition-fast);
 }
 .auth-goal-card:hover {
   background: var(--bg-3);
   border-color: var(--border-2);
-  color: var(--text);
+  transform: translateY(-1px);
 }
 .auth-goal-card--selected {
   background: var(--accent-dim);
   border-color: var(--accent);
+}
+.auth-goal-card--selected .auth-goal-label {
   color: var(--text);
 }
+.auth-goal-card--selected .auth-goal-desc {
+  color: var(--text-muted);
+}
+
+/* Icon */
 .auth-goal-icon {
-  font-size: 17px;
+  font-size: 20px;
+  line-height: 1;
   flex-shrink: 0;
+}
+
+/* Label + description stack */
+.auth-goal-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
 }
 .auth-goal-label {
   font-size: 13px;
-  font-weight: 500;
-  line-height: 1.3;
+  font-weight: 600;
+  color: var(--text-muted);
+  line-height: 1.2;
+  transition: color var(--transition-base);
+}
+.auth-goal-card:hover .auth-goal-label {
+  color: var(--text);
+}
+.auth-goal-desc {
+  font-size: 11.5px;
+  font-weight: 300;
+  color: var(--text-faint);
+  line-height: 1.35;
+  transition: color var(--transition-base);
+}
+.auth-goal-card:hover .auth-goal-desc {
+  color: var(--text-muted);
+}
+
+/* "Rather not say" — muted/ghost style, sits as first card */
+.auth-goal-card--none {
+  background: transparent;
+  border-style: dashed;
+  border-color: var(--border);
+}
+.auth-goal-card--none .auth-goal-label {
+  font-size: 12.5px;
+  font-weight: 400;
+  color: var(--text-faint);
+}
+.auth-goal-card--none .auth-goal-icon {
+  opacity: 0.5;
+}
+.auth-goal-card--none:hover {
+  border-color: var(--border-2);
+  background: var(--surface-subtle);
+  transform: none;
+}
+.auth-goal-card--none:hover .auth-goal-label {
+  color: var(--text-muted);
+}
+.auth-goal-card--none.auth-goal-card--selected {
+  background: transparent;
+  border-color: var(--border-2);
+}
+.auth-goal-card--none.auth-goal-card--selected .auth-goal-label {
+  color: var(--text-muted);
 }
 
 /* Hours control */
@@ -611,6 +674,7 @@
   border: 1px solid var(--border-2);
   border-radius: var(--radius-sm);
   padding: 6px 10px;
+  width: fit-content; 
 }
 .auth-hours-btn {
   background: none;
@@ -639,6 +703,16 @@
   color: var(--text);
   min-width: 32px;
   text-align: center;
+}
+.auth-hours-control input[type="number"]::-webkit-outer-spin-button,
+.auth-hours-control input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.auth-hours-control input[type="number"] {
+  -moz-appearance: textfield;
+  appearance: textfield;
 }
 
 /* Switch link */
@@ -700,7 +774,8 @@
     align-items: flex-start;
   }
   .auth-goal-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
   }
 }
 .auth-panel__image-container {

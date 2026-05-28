@@ -127,6 +127,11 @@ router.post(
   validateEmailLimiter,
   auth.validateEmailStep,
 );
+router.post(
+  "/auth/validate-username",
+  validateEmailLimiter,
+  auth.validateUsernameStep,
+);
 router.post("/auth/register", authLimiter, auth.register);
 router.post("/auth/login", loginLimiter, auth.login);
 router.post("/auth/google", loginLimiter, auth.googleAuth);
@@ -221,7 +226,12 @@ router.post("/sessions/:id/stop", protectBeacon, sessions.stopSession);
 router.post("/sessions", protect, createSessionFromUI);
 router.patch("/sessions/:id", protect, editSession);
 router.delete("/sessions/:id", protect, deleteSessionFromUI);
-router.post("/sessions/delete-all", protect, destructiveLimiter, sessions.deleteAllUserData);
+router.post(
+  "/sessions/delete-all",
+  protect,
+  destructiveLimiter,
+  sessions.deleteAllUserData,
+);
 
 router.get("/analytics/overview", protect, analytics.overview);
 router.get("/analytics/by-tag", protect, analytics.byTag);

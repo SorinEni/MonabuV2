@@ -1,4 +1,4 @@
-import PasswordStrengthMeter from "./PasswordStrengthMeter";
+import PasswordStrengthMeter from "../shared/PasswordStrengthMeter";
 
 export default function PasswordTab({
   hasPassword,

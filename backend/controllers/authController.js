@@ -241,6 +241,41 @@ export async function validateEmailStep(req, res) {
   }
 }
 
+// POST /api/auth/validate-username
+export async function validateUsernameStep(req, res) {
+  try {
+    const { username } = req.body;
+
+    if (!username || typeof username !== "string") {
+      return res.status(400).json({ error: "Username is required" });
+    }
+
+    const cleaned = username.trim().toLowerCase();
+
+    if (cleaned.length < 2 || cleaned.length > 32) {
+      return res
+        .status(400)
+        .json({ error: "Username must be between 2 and 32 characters" });
+    }
+
+    if (!/^[a-z0-9_.-]+$/.test(cleaned)) {
+      return res.status(400).json({
+        error:
+          "Username may only contain letters, numbers, and the symbols . _ -",
+      });
+    }
+
+    const taken = await User.findOne({ username: cleaned }).lean();
+    if (taken) {
+      return res.status(409).json({ error: "Username is already taken" });
+    }
+
+    res.json({ ok: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+}
+
 //  POST /api/auth/register
 export async function register(req, res) {
   try {
@@ -499,10 +534,16 @@ export async function forgotPassword(req, res) {
       return res.json({ message: GENERIC_MSG });
     }
 
-    const rawToken = attachResetToken(user);
-    await user.save();
+    const raw = crypto.randomBytes(32).toString("hex");
+    const hashed = crypto.createHash("sha256").update(raw).digest("hex");
+    const expiresAt = new Date(Date.now() + RESET_TOKEN_EXPIRY_MS);
 
-    sendPasswordResetEmail(normalizedEmail, rawToken).catch((err) =>
+    await User.updateOne(
+      { _id: user._id },
+      { resetPasswordToken: hashed, resetPasswordTokenExpiresAt: expiresAt },
+    );
+
+    sendPasswordResetEmail(normalizedEmail, raw).catch((err) =>
       console.error("Password reset email failed:", err.message),
     );
 
@@ -630,15 +671,14 @@ export async function me(req, res) {
 export async function updateMe(req, res) {
   try {
     const allowed = [
-      "name",
-      "weeklyHourGoal",
-      "primaryGoal",
-      "timezone",
-      "themePreference",
-      "pomoSettings",
-      "avatar",
-      "leaderboardPublic",
-      "language",
+      "none",
+      "work",
+      "school",
+      "fitness",
+      "learning",
+      "reading",
+      "habits",
+      "productivity",
     ];
 
     const updates = {};
@@ -758,7 +798,9 @@ export async function updateMe(req, res) {
     if (updates.language !== undefined) {
       const lang = (updates.language || "").trim().toLowerCase();
       if (!/^[a-z]{2}$/.test(lang)) {
-        return res.status(400).json({ error: "Language must be a 2-letter code (e.g. en, de, fr)" });
+        return res.status(400).json({
+          error: "Language must be a 2-letter code (e.g. en, de, fr)",
+        });
       }
       if (lang === (req.user.language || "").toLowerCase()) {
         delete updates.language;
@@ -795,7 +837,8 @@ export async function uploadAvatar(req, res) {
 
     if (!isGif && req.file.size > 5 * 1024 * 1024) {
       return res.status(400).json({
-        error: "Non-GIF images must be under 5 MB. Try a smaller file or compress it.",
+        error:
+          "Non-GIF images must be under 5 MB. Try a smaller file or compress it.",
       });
     }
 
@@ -869,7 +912,9 @@ export async function changePassword(req, res) {
 
     const sameAsOld = await user.comparePassword(newPassword);
     if (sameAsOld) {
-      return res.status(400).json({ error: "New password must be different from your current password" });
+      return res.status(400).json({
+        error: "New password must be different from your current password",
+      });
     }
 
     user.passwordHash = newPassword; // pre-save hook hashes it
