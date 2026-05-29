@@ -6,6 +6,7 @@ import { DayGroup } from "@components/sessions/DayGroup";
 import { DayView } from "@components/sessions/DayView";
 import { SkeletonGroup } from "@components/sessions/SkeletonGroup";
 import { useSessionsPage } from "@hooks/useSessionsPage";
+import PageHeader from "@components/shared/PageHeader";
 import "@styles/Sessions.css";
 
 export default function SessionsPage() {
@@ -44,11 +45,11 @@ export default function SessionsPage() {
   } = useSessionsPage();
 
   return (
-    <AppShell className="ss-main">
+    <AppShell>
+      <div className="page-shell page-shell--wide">
       <div className="ss-header">
         <div className="ss-header__left">
-          <h1 className="ss-title">Sessions</h1>
-          <p className="ss-subtitle">Your complete tracking history.</p>
+          <PageHeader page="Sessions" subtitle="Your complete tracking history." />
         </div>
         <div className="ss-header__actions">
           <div className="ss-view-tabs">
@@ -135,6 +136,7 @@ export default function SessionsPage() {
       ) : (
         <DayView onEdit={handleEdit} onDelete={handleDelete} refreshKey={dayRefreshKey} tagFilter={tagFilter} />
       )}
+      </div>{/* /page-shell */}
 
       {addOpen && <SessionAddModal onClose={() => setAddOpen(false)} onCreated={handleCreated} />}
       {editTarget && (

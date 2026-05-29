@@ -18,6 +18,7 @@ import { useProfileSettings } from "@hooks/useProfileSettings";
 import { usePasswordSettings } from "@hooks/usePasswordSettings";
 import { usePomodoroSettings } from "@hooks/usePomodoroSettings";
 import { useAccountActions } from "@hooks/useAccountActions";
+import PageHeader from "@components/shared/PageHeader";
 
 import "@styles/Settings.css";
 
@@ -57,14 +58,10 @@ export default function SettingsPage() {
   const account = useAccountActions(showToast);
 
   return (
-    <AppShell
-      className="settings-root"
-      userThemePreference={user?.themePreference}>
+    <AppShell userThemePreference={user?.themePreference}>
+      <div className="page-shell">
       <div className="settings-header">
-        <h1 className="settings-header__title">Settings</h1>
-        <p className="settings-header__sub">
-          Manage your account, preferences, and productivity settings.
-        </p>
+        <PageHeader page="Settings" subtitle="Manage your account, preferences, and productivity settings." />
         <div className="settings-tabs">
           {TABS.map((t) => (
             <button
@@ -124,6 +121,7 @@ export default function SettingsPage() {
         onDeleteAccount={account.handleDeleteAccount}
         onCloseDeleteAccount={account.onCloseDeleteAccount}
       />
+      </div>{/* /page-shell */}
 
       {toast && (
         <Toast

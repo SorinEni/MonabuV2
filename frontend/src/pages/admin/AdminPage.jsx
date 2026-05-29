@@ -25,6 +25,7 @@ import {
   AdminTagIcon,
   PencilIcon,
 } from "@components/shared/Icons";
+import PageHeader from "@components/shared/PageHeader";
 import "@styles/Admin.css";
 
 export default function AdminPage() {
@@ -64,48 +65,34 @@ export default function AdminPage() {
 
   return (
     <AppShell>
+      <div className="page-shell">
       <div className="admin">
         <div className="admin__header">
-          <div className="admin__breadcrumb">
-            <span>Monabu</span>
-            <span className="admin__breadcrumb-sep">/</span>
-            <span>Admin</span>
-            {editTarget && (
-              <>
-                <span className="admin__breadcrumb-sep">/</span>
-                <span>Edit user</span>
-              </>
-            )}
-          </div>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 14,
-              marginBottom: 4,
-            }}>
-            <h1 className="admin__title" style={{ marginBottom: 0 }}>
-              Admin Dashboard
-            </h1>
-            {isDev ? (
-              <span
-                className="inline-role-badge inline-role-badge--dev"
-                style={{ fontSize: 11, padding: "3px 10px" }}>
-                DEV
-              </span>
-            ) : (
-              <span
-                className="inline-role-badge inline-role-badge--admin"
-                style={{ fontSize: 11, padding: "3px 10px" }}>
-                ADMIN
-              </span>
-            )}
-          </div>
-          <p className="admin__subtitle">
-            {isDev
-              ? "You have Developer access — full platform control including role management and default tags."
-              : "Manage users, plans, and platform-wide settings."}
-          </p>
+          <PageHeader
+            page={editTarget ? "Admin / Edit user" : "Admin"}
+            title="Admin Dashboard"
+            subtitle={
+              isDev
+                ? "You have Developer access — full platform control including role management and default tags."
+                : "Manage users, plans, and platform-wide settings."
+            }
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 4 }}>
+              {isDev ? (
+                <span
+                  className="inline-role-badge inline-role-badge--dev"
+                  style={{ fontSize: 11, padding: "3px 10px" }}>
+                  DEV
+                </span>
+              ) : (
+                <span
+                  className="inline-role-badge inline-role-badge--admin"
+                  style={{ fontSize: 11, padding: "3px 10px" }}>
+                  ADMIN
+                </span>
+              )}
+            </div>
+          </PageHeader>
         </div>
 
         {editTarget ? (
@@ -458,7 +445,8 @@ export default function AdminPage() {
             onDone={() => setToast(null)}
           />
         )}
-      </div>
+      </div>{/* /admin */}
+      </div>{/* /page-shell */}
     </AppShell>
   );
 }

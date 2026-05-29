@@ -4,16 +4,7 @@
    Units: rem/em/% — no fixed px except hairline borders & shadows
 */
 
-/* ─── Layout ─────────────────────────────────────────────── */
-
-.lb-main {
-  padding: 2.5rem 3rem 6.25rem;
-  max-width: 56.25rem; /* 900px @ 16px base */
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-}
+/* ─── Layout — handled by .page-shell in globals.css ── */
 
 /* ─── Header ─────────────────────────────────────────────── */
 
@@ -778,32 +769,8 @@
   color: #fbbf24;
 }
 
-/* ─── Light theme overrides ──────────────────────────────── */
 
-.app-shell.theme-light .lb-period-tab--active {
-  background: var(--accent-dim);
-}
-.app-shell.theme-light .lb-row--me {
-  background: var(--accent-dim);
-}
-.app-shell.theme-light .lb-podium__pos {
-  color: rgba(255, 255, 255, 0.4);
-}
-.app-shell.theme-light .lb-my-rank {
-  box-shadow: 0 4px 1.25rem rgba(0, 0, 0, 0.12);
-}
-.app-shell.theme-light .aura-btn,
-.app-shell.theme-light .aura-give-pill {
-  background: rgba(251, 191, 36, 0.08);
-  border-color: rgba(251, 191, 36, 0.25);
-}
-.app-shell.theme-light .aura-btn--spent,
-.app-shell.theme-light .aura-give-pill--spent {
-  opacity: 0.35;
-}
-.app-shell.theme-light .lb-type-tab--active {
-  background: rgba(251, 191, 36, 0.12);
-}
+
 
 /* ─── Responsive: tablet (≤ 820px) ──────────────────────── */
 

@@ -9,111 +9,13 @@
   Depends on: globals.css, Sidebar.css
 */
 
-/*  Light theme overrides  */
-
-.app-shell.theme-light .timer-card,
-.app-shell.theme-light .sessions-card {
-  background: var(--bg-3);
-  box-shadow:
-    0 2px 12px rgba(30, 25, 20, 0.06),
-    0 0 0 1px var(--border);
-}
-.app-shell.theme-light .tag-picker__dropdown {
-  box-shadow:
-    0 8px 32px rgba(30, 25, 20, 0.12),
-    0 0 0 1px var(--border-2);
-}
-.app-shell.theme-light .modal {
-  box-shadow:
-    0 16px 48px rgba(30, 25, 20, 0.14),
-    0 0 0 1px var(--border-2);
-}
-.app-shell.theme-light .pomo-settings {
-  background: #f0ede8;
-  border-color: var(--border);
-}
-.app-shell.theme-light .pomo-stepper {
-  background: var(--bg-3);
-  border-color: var(--border-2);
-}
-.app-shell.theme-light .timer-note {
-  background: #f0ede8;
-  border-color: var(--border);
-}
-.app-shell.theme-light .session-row:hover,
-.app-shell.theme-light .session-row--latest {
-  background: rgba(30, 25, 20, 0.035);
-}
-.app-shell.theme-light .modal__input,
-.app-shell.theme-light .timer-session-name {
-  background: var(--bg-3);
-  border-color: var(--border-2);
-}
-.app-shell.theme-light .tag-picker__trigger {
-  background: var(--bg-3);
-  border-color: var(--border-2);
-}
-
-/*  Light theme: make the stopwatch & pomodoro rings visible  */
-/*
-  In dark mode the ring track is rgba(255,255,255,0.055) which is invisible on
-  a light (#fff) background. Override with a clearly visible mid-grey track and
-  map the glow to a soft blue shadow so the progress arc still pops.
-*/
-.app-shell.theme-light
-  .timer-clock-area
-  svg
-  circle[stroke="rgba(128,128,128,0.12)"],
-.app-shell.theme-light .pomo-ring svg circle:first-of-type {
-  stroke: rgba(0, 0, 0, 0.1);
-}
-
-/* ElapsedRing (TimerClock.jsx) and PomodoroClock ring track overrides */
-.app-shell.theme-light .timer-clock-area svg,
-.app-shell.theme-light .pomo-ring-wrap svg {
-  --ring-track-override: rgba(30, 25, 20, 0.1);
-}
-
-/*
-  The ring SVGs inline their colors directly, so we use a CSS filter trick
-  on the wrapper to ensure visibility. We override the track color via a
-  targeted selector on the first circle (track) within .pomo-ring-wrap and
-  .timer-clock-area.
-*/
-.app-shell.theme-light .pomo-ring-wrap .pomo-ring circle:first-of-type {
-  stroke: rgba(30, 25, 20, 0.1) !important;
-}
-
-/*
-  ElapsedRing in TimerClock.jsx renders inside .timer-clock-area in a div
-  with position:absolute. The track circle has no class, so we target by
-  position in the SVG.
-*/
-.app-shell.theme-light .timer-clock-area > div > svg circle:first-of-type {
-  stroke: rgba(30, 25, 20, 0.1) !important;
-}
-
-/* Digits on light background: use full-opacity dark text instead of faint */
-.app-shell.theme-light .timer-display {
-  color: rgba(26, 23, 20, 0.35);
-}
-.app-shell.theme-light .timer-display--running {
-  color: var(--tag-color, var(--accent));
-}
-.app-shell.theme-light .timer-clock__digits {
-  color: rgba(26, 23, 20, 0.75);
-}
 
 /*  Root layout  */
 
 .tracker-root {
   display: grid;
   grid-template-columns: 400px 1fr;
-  gap: 24px;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 40px 40px 80px;
-  min-height: 100vh;
+  gap: 1.5rem;
   align-items: start;
 }
 
@@ -170,13 +72,14 @@
 /*  Timer card  */
 
 .timer-card {
-  background: var(--bg-2);
+  background: var(--surface-card);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   padding: 24px;
   display: flex;
   flex-direction: column;
   gap: 16px;
+  box-shadow: var(--shadow-card);
 }
 
 .timer-card__top {
@@ -324,7 +227,7 @@
   font-family: var(--font-serif);
   font-size: 68px;
   font-weight: 700;
-  color: var(--text-faint);
+  color: var(--timer-digits);
   letter-spacing: -3px;
   line-height: 1;
   font-variant-numeric: tabular-nums;
@@ -337,7 +240,7 @@
   padding: 16px 0 8px;
 }
 .timer-display--running {
-  color: var(--tag-color, var(--accent));
+  color: var(--timer-digits-running);
   text-shadow: 0 0 60px
     color-mix(in srgb, var(--tag-color, var(--accent)) 25%, transparent);
 }
@@ -545,7 +448,7 @@
 /*  Pomodoro inline settings  */
 
 .pomo-settings {
-  background: var(--bg-3);
+  background: var(--surface-pomo-settings);
   border: 1px solid var(--border);
   border-radius: 12px;
   padding: 16px;
@@ -605,7 +508,7 @@
 .pomo-stepper {
   display: inline-flex;
   align-items: center;
-  background: var(--bg-2);
+  background: var(--surface-input);
   border: 1px solid var(--border-2);
   border-radius: 8px;
   overflow: hidden;
@@ -826,7 +729,7 @@
   font-size: var(--ct-digit-size, 52px);
   font-weight: var(--ct-digit-weight, 200);
   letter-spacing: var(--ct-digit-spacing, -0.03em);
-  color: var(--ct-text, var(--text));
+  color: var(--ct-text, var(--timer-clock-digits));
   line-height: 1;
 }
 
@@ -945,7 +848,7 @@
 
 .timer-note {
   width: 100%;
-  background: var(--bg-3);
+  background: var(--surface-pomo-settings);
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   color: var(--text);
@@ -1011,7 +914,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  background: var(--bg-3);
+  background: var(--surface-input);
   border: 1px solid var(--border-2);
   border-radius: var(--radius-sm);
   padding: 9px 12px;
@@ -1165,7 +1068,7 @@
   border-radius: var(--radius);
   z-index: 200;
   overflow: hidden;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+  box-shadow: var(--shadow-dropdown);
   animation: dropdown-in 0.15s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .tag-picker__dropdown--sub {
@@ -1430,12 +1333,13 @@
 /*  Sessions card  */
 
 .sessions-card {
-  background: var(--bg-2);
+  background: var(--surface-card);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   padding: 24px;
   display: flex;
   flex-direction: column;
+  box-shadow: var(--shadow-card);
 }
 
 .sessions-card__header {
@@ -1544,11 +1448,11 @@
   border: 1px solid transparent;
 }
 .session-row:hover {
-  background: var(--surface-hover-light);
+  background: var(--row-hover);
   border-color: var(--border);
 }
 .session-row--latest {
-  background: var(--surface-subtle);
+  background: var(--row-hover);
   border-color: var(--border);
 }
 
@@ -1640,7 +1544,7 @@
   border-radius: var(--radius-lg);
   padding: 28px 28px 24px;
   width: min(420px, 92vw);
-  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.4);
+  box-shadow: var(--shadow-modal);
   animation: rise 0.22s ease;
 }
 .modal__header {
@@ -1689,7 +1593,7 @@
   font-family: var(--font-sans);
   font-size: 14px;
   color: var(--text);
-  background: var(--bg-3);
+  background: var(--surface-input);
   border: 1px solid var(--border-2);
   border-radius: 9px;
   padding: 10px 14px;
@@ -1826,4 +1730,12 @@
 /* Centre the ring grid inside the card */
 .pomo-wrap .pomo-ring-wrap {
   align-self: center;
+}
+
+/*  Ring track stroke — adapts via --ring-track variable in globals.css  */
+.pomo-ring-wrap .pomo-ring circle:first-of-type {
+  stroke: var(--ring-track) !important;
+}
+.timer-clock-area > div > svg circle:first-of-type {
+  stroke: var(--ring-track) !important;
 }

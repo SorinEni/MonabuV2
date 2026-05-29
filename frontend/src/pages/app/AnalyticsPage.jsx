@@ -12,6 +12,7 @@ import { PeriodPicker } from "@components/analytics/PeriodPicker";
 import { Skeleton } from "@components/analytics/Skeleton";
 import { useAnalytics } from "@hooks/useAnalytics";
 import { formatHoursFull, formatDuration } from "@utils/formatters";
+import PageHeader from "@components/shared/PageHeader";
 import "@styles/Analytics.css";
 
 export default function AnalyticsPage() {
@@ -34,11 +35,11 @@ export default function AnalyticsPage() {
   } = useAnalytics();
 
   return (
-    <AppShell className="analytics-main">
+    <AppShell>
+      <div className="page-shell page-shell--wide">
       <div className="analytics-header">
         <div className="analytics-header__left">
-          <h1 className="analytics-header__title">Analytics</h1>
-          <p className="analytics-header__sub">Your learning at a glance</p>
+          <PageHeader page="Analytics" subtitle="Your learning at a glance" />
         </div>
         <div className="analytics-header__right">
           <button
@@ -284,6 +285,7 @@ export default function AnalyticsPage() {
           </>
         )}
       </div>
+      </div>{/* /page-shell */}
 
       {drawerDate && <DayDrawer date={drawerDate} onClose={handleDrawerClose} />}
     </AppShell>

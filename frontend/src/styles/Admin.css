@@ -3,12 +3,9 @@
   Depends on: globals.css, Sidebar.css
 */
 
-/*  Page shell  */
+/*  Page shell — layout handled by .page-shell in globals.css  */
 .admin {
-  padding: 40px 48px;
-  max-width: 1280px;
-  margin: 0 auto;
-  animation: rise 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+  /* component-only styles; layout via .page-shell */
 }
 
 /*  Page header  */

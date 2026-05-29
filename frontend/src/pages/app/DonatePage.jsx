@@ -3,6 +3,7 @@
 
 import { useEffect } from "react";
 import AppShell from "@components/layout/AppShell";
+import PageHeader from "@components/shared/PageHeader";
 import "@styles/Donate.css";
 
 function CoffeeIcon() {
@@ -57,22 +58,15 @@ export default function DonatePage() {
   }, []);
 
   return (
-    <AppShell className="donate-page">
+    <AppShell>
+      <div className="page-shell page-shell--narrow">
       <div className="donate-page__inner">
         <div className="donate-page__header">
-          <div className="donate-page__eyebrow">
-            <span className="donate-page__eyebrow-dot" />
-            Support us
-          </div>
-          <h1 className="donate-page__title">
-            Two people.<br />
-            <em>One big project.</em>
-          </h1>
-          <p className="donate-page__subtitle">
-            We're two people building Monabu in our spare time, fuelled by caffeine and the occasional
-            existential crisis. If you find Monabu helpful and want to support our work, consider buying
-            us a coffee.
-          </p>
+          <PageHeader
+            page="Donate"
+            title="Two people. One big project."
+            subtitle="We're two people building Monabu in our spare time, fuelled by caffeine and the occasional existential crisis. If you find Monabu helpful and want to support our work, consider buying us a coffee."
+          />
         </div>
 
         <div className="donate-devs">
@@ -119,7 +113,8 @@ export default function DonatePage() {
           <div className="donate-kofi-banner__cta">Open Ko-fi <span aria-hidden="true">→</span></div>
           <div className="donate-kofi-banner__glow" />
         </a>
-      </div>
+      </div>{/* /donate-page__inner */}
+      </div>{/* /page-shell */}
     </AppShell>
   );
 }

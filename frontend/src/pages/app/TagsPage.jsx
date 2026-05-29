@@ -9,6 +9,7 @@ import {
   TagRow,
 } from "@components/tags";
 import { useTagsPage } from "@hooks/useTagsPage";
+import PageHeader from "@components/shared/PageHeader";
 import "@styles/Tags.css";
 
 export default function TagsPage() {
@@ -36,13 +37,11 @@ export default function TagsPage() {
 
   return (
     <AppShell>
+      <div className="page-shell page-shell--wide">
       <div className="tags-page">
         <div className="tags-header">
           <div className="tags-header__left">
-            <h1 className="tags-header__title">Tags</h1>
-            <p className="tags-header__sub">
-              Organise your sessions into subjects, projects, or skills.
-            </p>
+            <PageHeader page="Tags" subtitle="Organise your sessions into subjects, projects, or skills." />
           </div>
           <div className="tags-header__right">
             <div className="tags-search-wrap">
@@ -165,7 +164,8 @@ export default function TagsPage() {
             />
           )}
         </section>
-      </div>
+      </div>{/* /tags-page */}
+      </div>{/* /page-shell */}
     </AppShell>
   );
 }

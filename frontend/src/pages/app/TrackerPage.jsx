@@ -14,6 +14,7 @@ import {
   StaleRecoveryOverlay,
   AutoSavedBanner,
 } from "@components/tracker/TabOverlays";
+import PageHeader from "@components/shared/PageHeader";
 import CreateTagModal from "@components/tracker/CreateTagModal";
 import EditTagModal from "@components/tracker/EditTagModal";
 import DeleteTagModal from "@components/tracker/DeleteTagModal";
@@ -91,7 +92,14 @@ export default function TrackerPage() {
   } = useTracker();
 
   return (
-    <AppShell className="tracker-root">
+    <AppShell>
+      <div className="page-shell">
+        <PageHeader
+          page="Tracker"
+          title="Tracker"
+          subtitle="Focus on what matters"
+        />
+        <div className="tracker-root">
       {/*  Left column  */}
       <div className="tracker-left">
         {/* Banners */}
@@ -384,6 +392,8 @@ export default function TrackerPage() {
           onConfirm={handleConfirmDeleteTag}
         />
       )}
+      </div>{/* /tracker-root */}
+      </div>{/* /page-shell */}
     </AppShell>
   );
 }

@@ -3,16 +3,7 @@
    Depends on: globals.css
 */
 
-/*  Layout  */
-
-.ss-main {
-  padding: 40px 48px 80px;
-  max-width: 90rem;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-}
+/*  Layout — handled by .page-shell in globals.css  */
 
 /*  Header  */
 
@@ -116,7 +107,7 @@
 .ss-filter__search {
   width: 100%;
   height: 36px;
-  background: var(--bg-3);
+  background: var(--surface-input);
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   color: var(--text);
@@ -408,7 +399,7 @@
 }
 
 .ss-row:hover {
-  background: var(--surface-hover-light);
+  background: var(--row-hover);
   border-color: var(--border);
 }
 
@@ -558,7 +549,7 @@
   background: var(--bg-3);
   border: 1px solid var(--border-2);
   border-radius: var(--radius-sm);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  box-shadow: var(--shadow-dropdown);
   min-width: 140px;
   padding: 4px;
   animation: dropdown-in 0.12s ease both;
@@ -731,7 +722,7 @@
   position: fixed;
   inset: 0;
   z-index: 500;
-  background: rgba(0, 0, 0, 0.55);
+  background: var(--shadow-overlay);
   backdrop-filter: blur(6px);
   display: flex;
   align-items: center;
@@ -741,10 +732,10 @@
 }
 
 .ss-modal {
-  background: var(--bg-2);
+  background: var(--surface-card);
   border: 1px solid var(--border-2);
   border-radius: var(--radius-lg);
-  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.5);
+  box-shadow: var(--shadow-modal);
   width: 100%;
   max-width: 660px;
   max-height: 90vh;
@@ -843,7 +834,7 @@
 
 .ss-field__input,
 .ss-field__textarea {
-  background: var(--bg-3);
+  background: var(--surface-input-alt);
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   color: var(--text);
@@ -1224,41 +1215,8 @@
   line-height: 1.6;
 }
 
-/*  Light theme overrides  */
 
-.app-shell.theme-light .ss-filter__search {
-  background: var(--bg-3);
-  border-color: var(--border);
-}
 
-.app-shell.theme-light .ss-view-tabs {
-  background: var(--bg-2);
-}
-
-.app-shell.theme-light .ss-dayview__nav {
-  background: var(--bg-2);
-}
-
-.app-shell.theme-light .ss-row:hover {
-  background: rgba(0, 0, 0, 0.04);
-}
-
-.app-shell.theme-light .ss-menu {
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
-}
-
-.app-shell.theme-light .ss-modal {
-  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.2);
-}
-
-.app-shell.theme-light .ss-field__input,
-.app-shell.theme-light .ss-field__textarea {
-  background: var(--bg-2);
-}
-
-.app-shell.theme-light .ss-modal-overlay {
-  background: rgba(0, 0, 0, 0.3);
-}
 
 /*  Responsive  */
 
@@ -1350,7 +1308,7 @@
   justify-content: space-between;
   gap: 8px;
   padding: 10px 14px;
-  background: var(--bg-2);
+  background: var(--surface-input);
   border: 1px solid var(--border-2);
   border-radius: var(--radius-sm);
   font-family: var(--font-sans);
@@ -1416,7 +1374,7 @@
   background: var(--bg-3);
   border: 1px solid var(--border-2);
   border-radius: var(--radius-sm);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28);
+  box-shadow: var(--shadow-dropdown);
   overflow: hidden;
   animation: dropdown-in 0.12s ease;
 }
@@ -1583,19 +1541,8 @@
   color: var(--chip-color, var(--accent));
 }
 
-/* Light theme overrides */
-.app-shell.theme-light .ss-tag-selector__trigger {
-  background: var(--bg-3);
-}
 
-.app-shell.theme-light .ss-tag-selector__dropdown {
-  background: var(--bg-3);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
-}
 
-.app-shell.theme-light .ss-tag-selector__search {
-  background: var(--bg-2);
-}
 
 .ss-tag-selector__group-toggle {
   width: 100%;

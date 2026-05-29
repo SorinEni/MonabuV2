@@ -3,6 +3,7 @@
 // Icon components extracted to keep JSX focused on content.
 
 import AppShell from "@components/layout/AppShell";
+import PageHeader from "@components/shared/PageHeader";
 import "@styles/Contact.css";
 
 function RedditIcon() {
@@ -59,17 +60,11 @@ const CONTACT_CARDS = [
 
 export default function ContactPage() {
   return (
-    <AppShell className="contact-page">
+    <AppShell>
+      <div className="page-shell page-shell--narrow">
       <div className="contact-page__inner">
         <div className="contact-page__header">
-          <div className="contact-page__eyebrow">
-            <span className="contact-page__eyebrow-dot" />
-            Get in touch
-          </div>
-          <h1 className="contact-page__title">We'd love to hear from you</h1>
-          <p className="contact-page__subtitle">
-            Have a question, suggestion, or just want to say hi? Join our community or drop us a message.
-          </p>
+          <PageHeader page="Contact" title="We'd love to hear from you" subtitle="Have a question, suggestion, or just want to say hi? Join our community or drop us a message." />
         </div>
 
         <div className="contact-page__cards">
@@ -94,7 +89,8 @@ export default function ContactPage() {
         <p className="contact-page__note">
           For bug reports or feature requests, Discord is usually the fastest way to reach us.
         </p>
-      </div>
+      </div>{/* /contact-page__inner */}
+      </div>{/* /page-shell */}
     </AppShell>
   );
 }

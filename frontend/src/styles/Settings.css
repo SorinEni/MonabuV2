@@ -3,20 +3,12 @@
    Depends on: globals.css, Sidebar.css
 */
 
-/* ─── Layout ────────────────────────────────────────────────── */
-
-.settings-root {
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-  background: var(--bg);
-}
+/* ─── Layout — handled by .page-shell in globals.css ────── */
 
 .settings-header {
-  padding: var(--page-pad-block-start) var(--page-pad-inline) 0;
   border-bottom: 1px solid var(--border);
+  margin: -2.5rem -3rem 0;
+  padding: 2.5rem 3rem 0;
 }
 
 .settings-header__title {
@@ -78,7 +70,7 @@
 
 .settings-body {
   flex: 1;
-  padding: var(--page-pad-block-start) var(--page-pad-inline);
+  padding-top: 2rem;
   display: flex;
   flex-direction: column;
   gap: 0;

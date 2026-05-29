@@ -2,18 +2,10 @@
    Donate.css — Support/donation page styles
    Depends on: globals.css
 */
-
-.donate-page {
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
-  min-height: 100vh;
-  padding: 3.75rem 3rem;
-}
+/* Layout — handled by .page-shell in globals.css */
 
 .donate-page__inner {
   width: 100%;
-  max-width: 43.75rem;
   display: flex;
   flex-direction: column;
   gap: 2rem;

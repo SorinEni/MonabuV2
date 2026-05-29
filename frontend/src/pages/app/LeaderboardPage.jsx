@@ -13,6 +13,7 @@ import {
   AuraRow,
   SkeletonRow,
 } from "@components/leaderboard";
+import PageHeader from "@components/shared/PageHeader";
 import "@styles/Leaderboard.css";
 
 export default function LeaderboardPage() {
@@ -44,10 +45,10 @@ export default function LeaderboardPage() {
 
   return (
     <AppShell>
+      <div className="page-shell">
       <div className="lb-header">
         <div className="lb-header__left">
-          <h1 className="lb-title">Leaderboard</h1>
-          <p className="lb-subtitle">See how you stack up against the community.</p>
+          <PageHeader page="Leaderboard" subtitle="See how you stack up against the community." />
           <div className="lb-type-tabs" role="tablist">
             {LEADERBOARD_TABS.map((t) => (
               <button
@@ -182,6 +183,7 @@ export default function LeaderboardPage() {
           <span className="lb-my-rank__aura-give" title="Aura left to give today">✨ {auraToGive}</span>
         </div>
       )}
+      </div>
     </AppShell>
   );
 }

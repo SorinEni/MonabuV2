@@ -2,18 +2,10 @@
    Contact.css — Contact page styles
    Depends on: globals.css
 */
-
-.contact-page {
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
-  min-height: 100vh;
-  padding: 3.75rem 3rem;
-}
+/* Layout — handled by .page-shell in globals.css */
 
 .contact-page__inner {
   width: 100%;
-  max-width: 48rem;
   display: flex;
   flex-direction: column;
   gap: 3rem;
@@ -197,14 +189,8 @@
   line-height: 1.5;
 }
 
-/* Light theme adjustments */
-.app-shell.theme-light .contact-card {
-  background: var(--bg-2);
-  border-color: var(--border);
-}
-.app-shell.theme-light .contact-card:hover {
-  background: var(--bg-3);
-}
+
+
 
 /* Responsive */
 @media (max-width: 40rem) {

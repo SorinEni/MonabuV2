@@ -20,12 +20,7 @@
   --tags-row-px: 1.25rem;
 }
 
-/*  Page layout  */
-
-.tags-page {
-  padding: var(--page-pad-block-start) var(--page-pad-inline) var(--page-pad-block-end);
-  max-width: 90rem;
-}
+/*  Page layout — handled by .page-shell in globals.css  */
 
 /*  Header  */
 
@@ -305,7 +300,7 @@
   border-bottom: none;
 }
 .tag-row:hover {
-  background: var(--surface-hover-light);
+  background: var(--row-hover);
 }
 
 .tag-row--archived {
@@ -617,9 +612,9 @@
 }
 
 .color-dot--selected {
-  border-color: #fff;
+  border-color: var(--color-dot-selected-border);
   transform: scale(1.1);
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.4);
+  box-shadow: var(--color-dot-selected-shadow);
 }
 
 /*  Tag name input  */
@@ -892,7 +887,7 @@
 }
 
 .subtag-row:hover {
-  background: var(--surface-hover-light);
+  background: var(--row-hover);
 }
 .subtag-row--archived {
   opacity: 0.5;
@@ -1077,73 +1072,6 @@
   margin-top: 0;
 }
 
-/*  Light theme  */
-
-.app-shell.theme-light .tags-search,
-.app-shell.theme-light .tag-input {
-  background: var(--bg-3);
-  border-color: var(--border);
-  color: var(--text);
-}
-
-.app-shell.theme-light .tags-search:focus,
-.app-shell.theme-light .tag-input:focus {
-  border-color: var(--accent-border);
-  background: var(--bg-2);
-}
-
-.app-shell.theme-light .tags-section {
-  background: var(--bg-2);
-}
-.app-shell.theme-light .tags-section--defaults {
-  background: var(--bg);
-}
-
-.app-shell.theme-light .tag-row:hover,
-.app-shell.theme-light .subtag-row:hover {
-  background: rgba(0, 0, 0, 0.03);
-}
-
-.app-shell.theme-light .tags-archived-sub__toggle:hover {
-  background: rgba(0, 0, 0, 0.03);
-}
-
-.app-shell.theme-light .create-tag-btn {
-  background: var(--accent-dim);
-  border-color: var(--accent-border);
-}
-
-.app-shell.theme-light .create-tag-btn:hover {
-  background: rgba(37, 99, 235, 0.12);
-}
-
-.app-shell.theme-light .color-dot--selected {
-  border-color: #1e1714;
-  box-shadow: 0 0 0 1px rgba(30, 23, 20, 0.3);
-}
-
-.app-shell.theme-light .subtag-panel-row,
-.app-shell.theme-light .subtag-panel {
-  background: var(--bg);
-}
-
-.app-shell.theme-light .subtag-input {
-  background: var(--bg-3);
-  border-color: var(--border);
-  color: var(--text);
-}
-
-.app-shell.theme-light .subtag-input:focus {
-  border-color: var(--accent-border);
-}
-
-.app-shell.theme-light .subtag-add-btn:hover {
-  background: var(--accent-dim);
-}
-
-.app-shell.theme-light .plan-banner__text {
-  color: var(--text-muted);
-}
 
 /*  Responsive  */
 
