@@ -7,6 +7,7 @@ import { DayView } from "@components/sessions/DayView";
 import { SkeletonGroup } from "@components/sessions/SkeletonGroup";
 import { useSessionsPage } from "@hooks/useSessionsPage";
 import PageHeader from "@components/shared/PageHeader";
+import { PlusIcon } from "@components/shared/Icons";
 import "@styles/Sessions.css";
 
 export default function SessionsPage() {
@@ -65,9 +66,7 @@ export default function SessionsPage() {
             </button>
           </div>
           <button className="ss-log-btn" onClick={() => setAddOpen(true)}>
-            <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-              <path d="M6 1v10M1 6h10" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-            </svg>
+            <PlusIcon size={12} />
             Log session
           </button>
         </div>

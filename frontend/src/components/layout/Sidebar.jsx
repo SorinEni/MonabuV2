@@ -18,6 +18,9 @@ import {
   CollapseLeftIcon,
   CollapseRightIcon,
   LogoutIcon,
+  AdminShieldIcon,
+  ContactNavIcon,
+  DonateNavIcon,
 } from "@components/shared/Icons";
 import "@styles/Sidebar.css";
 
@@ -43,46 +46,6 @@ function NavLink({ to, label, icon, collapsed, active }) {
   );
 }
 
-function AdminShieldIcon() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-      <path
-        d="M8 1.5L2 4v4c0 3.3 2.5 6.4 6 7 3.5-.6 6-3.7 6-7V4L8 1.5z"
-        stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round"
-      />
-      <path
-        d="M5.5 8l1.5 1.5L10.5 6"
-        stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
-
-function ContactIcon() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-      <path
-        d="M14 10.667A1.333 1.333 0 0 1 12.667 12H4.667L2 14.667V3.333A1.333 1.333 0 0 1 3.333 2h9.334A1.333 1.333 0 0 1 14 3.333v7.334z"
-        stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
-
-function DonateIcon() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-      <path
-        d="M2.5 6.5h11M2.5 6.5C2.5 5.4 3.4 4.5 4.5 4.5h7c1.1 0 2 .9 2 2v5c0 1.1-.9 2-2 2h-7c-1.1 0-2-.9-2-2v-5z"
-        stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"
-      />
-      <path
-        d="M5.5 2.5c0 0 .5 1 1 1.5M8 2c0 0 .5 1.2 0 2M10.5 2.5c0 0-.5 1-1 1.5"
-        stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"
-      />
-    </svg>
-  );
-}
 
 export default function Sidebar({ collapsed, onToggle, theme, onThemeToggle }) {
   const [user, setUser] = useState(getUser);
@@ -146,14 +109,14 @@ export default function Sidebar({ collapsed, onToggle, theme, onThemeToggle }) {
           to="/donate"
           className={`sidebar__footer-link${pathname === "/donate" ? " sidebar__footer-link--active" : ""}`}
           title={collapsed ? "Support" : undefined}>
-          <span className="sidebar__footer-link-icon"><DonateIcon /></span>
+          <span className="sidebar__footer-link-icon"><DonateNavIcon /></span>
           {!collapsed && <span className="sidebar__footer-link-label">Support</span>}
         </Link>
         <Link
           to="/contact"
           className={`sidebar__footer-link${pathname === "/contact" ? " sidebar__footer-link--active" : ""}`}
           title={collapsed ? "Contact" : undefined}>
-          <span className="sidebar__footer-link-icon"><ContactIcon /></span>
+          <span className="sidebar__footer-link-icon"><ContactNavIcon /></span>
           {!collapsed && <span className="sidebar__footer-link-label">Contact</span>}
         </Link>
       </div>

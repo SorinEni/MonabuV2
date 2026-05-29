@@ -5,14 +5,7 @@
 import { useState, useEffect, useMemo, useRef } from "react";
 import { api } from "@api/api";
 import { formatDuration, formatTime, formatDateFull } from "@utils/formatters";
-
-function ChevronDown({ className }) {
-  return (
-    <svg className={className} width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-      <polyline points="6 9 12 15 18 9" />
-    </svg>
-  );
-}
+import { ChevronDownIcon } from "@components/shared/Icons";
 
 /**
  * Props:
@@ -305,7 +298,7 @@ export default function DayDrawer({ date, onClose }) {
                         </span>
                         <span className="day-drawer__tag-header-right">
                           <span className="day-drawer__tag-header-time">{formatDuration(tag.seconds)}</span>
-                          <ChevronDown className={`day-drawer__tag-chevron${isOpen ? " day-drawer__tag-chevron--open" : ""}`} />
+                          <ChevronDownIcon size={14} className={`day-drawer__tag-chevron${isOpen ? " day-drawer__tag-chevron--open" : ""}`} />
                         </span>
                       </button>
                       {isOpen && (

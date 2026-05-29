@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { api } from "@api/api";
-import { PencilIcon, TrashIcon, CheckIcon, CloseIcon, ChevronDownIcon } from "@components/shared/Icons";
+import { PencilIcon, TrashIcon, CheckIcon, CloseIcon, ChevronDownIcon, DragHandleIcon, ArchiveIcon, RestoreIcon, EyeOpenIcon, EyeClosedIcon } from "@components/shared/Icons";
 import { EditTagForm } from "./EditTagForm";
 import { SubTagPanel } from "./SubTagPanel";
 import { formatHours } from "./formatHours";
@@ -97,14 +97,7 @@ export function TagRow({ tag, onUpdate, onDelete, onSubTagsChange, dragging, isD
       <li className={rowClass}>
         {!isDefault && tag.status === "active" ? (
           <span className="tag-row__drag-handle" title="Drag to reorder">
-            <svg width="10" height="16" viewBox="0 0 10 16" fill="currentColor">
-              <circle cx="3" cy="3" r="1.5" />
-              <circle cx="3" cy="8" r="1.5" />
-              <circle cx="3" cy="13" r="1.5" />
-              <circle cx="7" cy="3" r="1.5" />
-              <circle cx="7" cy="8" r="1.5" />
-              <circle cx="7" cy="13" r="1.5" />
-            </svg>
+            <DragHandleIcon />
           </span>
         ) : (
           <span className="tag-row__drag-handle tag-row__drag-handle--placeholder" />
@@ -162,19 +155,12 @@ export function TagRow({ tag, onUpdate, onDelete, onSubTagsChange, dragging, isD
               )}
               {tag.status === "active" && (
                 <button className="tag-row__action-btn" title="Archive" disabled={loading} onClick={handleArchive}>
-                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <polyline points="21 8 21 21 3 21 3 8" />
-                    <rect x="1" y="3" width="22" height="5" />
-                    <line x1="10" y1="12" x2="14" y2="12" />
-                  </svg>
+                  <ArchiveIcon />
                 </button>
               )}
               {tag.status === "archived" && (
                 <button className="tag-row__action-btn" title="Restore to active" disabled={loading} onClick={handleRestore}>
-                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <polyline points="1 4 1 10 7 10" />
-                    <path d="M3.51 15a9 9 0 1 0 .49-3.86" />
-                  </svg>
+                  <RestoreIcon />
                 </button>
               )}
               {confirmDelete ? (
@@ -206,33 +192,19 @@ export function TagRow({ tag, onUpdate, onDelete, onSubTagsChange, dragging, isD
                 disabled={loading}
                 onClick={handleToggleHide}>
                 {tag.isHidden ? (
-                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                    <circle cx="12" cy="12" r="3" />
-                  </svg>
+                  <EyeOpenIcon size={11} />
                 ) : (
-                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94" />
-                    <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19" />
-                    <line x1="1" y1="1" x2="23" y2="23" />
-                  </svg>
+                  <EyeClosedIcon size={11} />
                 )}
               </button>
               {tag.status === "active" && (
                 <button className="tag-row__action-btn" title="Archive" disabled={loading} onClick={handleArchive}>
-                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <polyline points="21 8 21 21 3 21 3 8" />
-                    <rect x="1" y="3" width="22" height="5" />
-                    <line x1="10" y1="12" x2="14" y2="12" />
-                  </svg>
+                  <ArchiveIcon />
                 </button>
               )}
               {tag.status === "archived" && (
                 <button className="tag-row__action-btn" title="Restore to active" disabled={loading} onClick={handleRestore}>
-                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <polyline points="1 4 1 10 7 10" />
-                    <path d="M3.51 15a9 9 0 1 0 .49-3.86" />
-                  </svg>
+                  <RestoreIcon />
                 </button>
               )}
             </>
